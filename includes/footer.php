@@ -1,7 +1,7 @@
 </main>
     <footer>
         <div class="footer-container">
-            <p>&copy; <?php echo date('Y'); ?> HR Management System</p>
+            <p>&copy; <?php echo date('Y'); ?> HoRizon | HR Management System</p>
             <p>AACL | TheFourthGroup Solutions</p>
         </div>
     </footer>

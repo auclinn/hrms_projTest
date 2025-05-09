@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_employee'])) {
 $employees = getAllEmployees();
 ?>
 <?php include '../../includes/header.php'; ?>
+<div class="employee-mgt-container">
     <h2>Employee Management</h2>
     
     <?php if (isset($success)): ?>
@@ -164,4 +165,6 @@ $employees = getAllEmployees();
             </tbody>
         </table>
     </div>
+</div>
+    
 <?php include '../../includes/footer.php'; ?>

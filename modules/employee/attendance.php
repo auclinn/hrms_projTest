@@ -64,7 +64,7 @@ foreach ($attendanceRecords as $record) {
 ?>
 
 <?php include '../../includes/header.php'; ?>
-
+<div class="attendance-container">
 <h2>My Attendance</h2>
 
 <?php if (isset($success)): ?>
@@ -162,5 +162,6 @@ foreach ($attendanceRecords as $record) {
         </tbody>
     </table>
 <?php endif; ?>
+</div>
 
 <?php include '../../includes/footer.php'; ?>

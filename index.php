@@ -44,6 +44,7 @@ if (hasRole('admin') || hasRole('hr')) {
 }
 ?>
 <?php include 'includes/header.php'; ?>
+<div class="dashboard-container">
     <h2>Dashboard</h2>
     
     <?php if (hasRole('admin') || hasRole('hr')): ?>
@@ -78,4 +79,6 @@ if (hasRole('admin') || hasRole('hr')) {
             </div>
         </div>
     <?php endif; ?>
+</div>
+    
 <?php include 'includes/footer.php'; ?>
