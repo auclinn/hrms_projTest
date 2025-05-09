@@ -16,7 +16,7 @@
                     <a href="/index.php">Dashboard</a>
                     <?php if (hasRole('admin') || hasRole('hr')): ?>
                         <a href="/modules/hr/employees.php">Employees</a>
-                        <a href="/modules/hr/attendance.php">Attendance</a>
+                        <a href="/modules/employee/attendance.php">Attendance</a>
                         <a href="/modules/hr/leave.php">Leave Requests</a>
                     <?php else: ?>
                         <a href="/modules/employee/profile.php">My Profile</a>

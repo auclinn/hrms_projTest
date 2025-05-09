@@ -7,8 +7,15 @@ function isLoggedIn() {
 }
 
 function hasRole($role) {
-    return isset($_SESSION['role']) && $_SESSION['role'] === $role;
+    if (!isset($_SESSION['role'])) return false;
+
+    if (is_array($role)) {
+        return in_array($_SESSION['role'], $role);
+    }
+
+    return $_SESSION['role'] === $role;
 }
+
 
 function requireLogin() {
     if (!isLoggedIn()) {
@@ -20,7 +27,7 @@ function requireLogin() {
 function requireRole($role) {
     requireLogin();
     if (!hasRole($role)) {
-        header("Location: unauthorized.php");
+        header("Location: /unauthorized.php");
         exit();
     }
 }
