@@ -33,7 +33,7 @@ function getEmployeeDetails($employeeId) {
 function getAllEmployees() {
     global $pdo;
     
-    $stmt = $pdo->prepare("SELECT e.*, u.email FROM employees e JOIN users u ON e.user_id = u.id");
+    $stmt = $pdo->prepare("SELECT e.*, u.email, u.role FROM employees e JOIN users u ON e.user_id = u.id");
     $stmt->execute();
     return $stmt->fetchAll();
 }

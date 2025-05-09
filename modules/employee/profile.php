@@ -6,7 +6,7 @@ require_once '../../includes/functions.php';
 requireLogin();
 $employeeId = getEmployeeId();
 
-// Handle profile update
+// profile update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = sanitize($_POST['first_name']);
     $lastName = sanitize($_POST['last_name']);
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get employee details
+// get employee detailss
 $employee = getEmployeeDetails($employeeId);
 ?>
 <?php include '../../includes/header.php'; ?>

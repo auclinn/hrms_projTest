@@ -5,9 +5,9 @@ require_once '../../includes/functions.php';
 
 requireLogin();
 $employeeId = getEmployeeId();
-$role = $_SESSION['role'] ?? 'employee'; // Assumes session role is set
+$role = $_SESSION['role'] ?? 'employee';
 
-// Mark attendance
+// mark attendance
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $today = date('Y-m-d');
 
@@ -46,14 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Get current user's attendance records for the month
+// get current user's attendance records for the month
 $stmt = $pdo->prepare("SELECT * FROM attendance 
     WHERE employee_id = ? AND MONTH(date) = MONTH(CURRENT_DATE()) 
     ORDER BY date DESC");
 $stmt->execute([$employeeId]);
 $attendanceRecords = $stmt->fetchAll();
 
-// Check today's attendance
+// check if theres attendance today na
 $todayRecord = null;
 foreach ($attendanceRecords as $record) {
     if ($record['date'] == date('Y-m-d')) {
