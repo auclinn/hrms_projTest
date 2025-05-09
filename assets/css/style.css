@@ -1,6 +1,11 @@
+/* default font */
+* {
+    font-family: "DM Sans", sans-serif;
+}
+
 /* Base Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "DM Sans", sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -9,6 +14,9 @@ body {
 }
 
 .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
@@ -22,9 +30,20 @@ header {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.header-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 header h1 {
     margin: 0;
     font-size: 24px;
+}
+
+h2 {
+    font-weight: 900;
 }
 
 nav {
@@ -64,6 +83,13 @@ footer {
     font-size: 14px;
 }
 
+.footer-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 /* Forms */
 form {
     margin: 20px 0;
@@ -100,7 +126,7 @@ textarea {
 
 button,
 input[type="submit"] {
-    background-color: #3498db;
+    background-color: #1a2859;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -112,6 +138,51 @@ input[type="submit"] {
 button:hover,
 input[type="submit"]:hover {
     background-color: #2980b9;
+}
+
+/* ---------- Login page specific stuff */
+.login-form-container{
+    width: 30vw;
+}
+.login-h2 {
+    text-align: center;
+}
+.form-control {
+    margin: 0.5rem 0;
+}
+
+.form-floating-label {
+    position: relative;
+}
+
+.form-floating-label label {
+    position: absolute;
+    top: -0.80rem;
+    left: 0.30rem;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: #757575;
+    padding: 0 0.25rem;
+    transform: translateY(1.5rem);
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.form-floating-label input:focus + label,
+.form-floating-label input:not(:placeholder-shown) + label {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Hide placeholder on focus */
+.form-floating-label input:focus::placeholder {
+color: transparent;
+}
+
+.login-btn-container {
+    display: flex;
+    justify-content: center;
 }
 
 /* Tables */
@@ -187,7 +258,7 @@ table tr:hover {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .stats {
         flex-direction: column;
     }
@@ -200,4 +271,15 @@ table tr:hover {
     nav a {
         margin: 5px 0;
     }
+
+    .login-form-container{
+        width: 70vw;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .login-form-container{
+        width: 40vw;
+    }
+    
 }

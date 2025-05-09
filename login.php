@@ -10,7 +10,7 @@ if (isLoggedIn()) {
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = sanitize($_POST['username']);
-    $password = $_POST['password']; // Don't sanitize password!
+    $password = $_POST['password'];
 
     if (login($username, $password)) {
         header("Location: index.php");
@@ -21,19 +21,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <?php include 'includes/header.php'; ?>
-    <h2>Login</h2>
+<div class="login-form-container">
+    <h2 class="login-h2">Welcome.</h2>
     <?php if ($error): ?>
         <div class="error"><?php echo htmlspecialchars($error); ?></div>
     <?php endif; ?>
     <form method="POST" action="login.php">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+        <div class="form-floating-label">
+            <input type="text" class="form-control" placeholder="Username" id="username" name="username" required>
+            <label for="username">Username</label>
         </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+        <div class="form-floating-label">
+            <input type="password" class="form-control" placeholder="Password" id="password" name="password" required>
+            <label for="password">Password</label>        
         </div>
-        <button type="submit">Login</button>
+        <div class="login-btn-container">
+            <button type="submit">Login</button>
+        </div>
+        
     </form>
+</div>
+    
 <?php include 'includes/footer.php'; ?>

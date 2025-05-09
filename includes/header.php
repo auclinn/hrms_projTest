@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Management System</title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+    </style>
 </head>
 <body>
     <header>
-        <div class="container">
+        <div class="header-container">
             <h1>HR Management System</h1>
             <nav>
                 <?php if (isLoggedIn()): ?>
