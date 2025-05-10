@@ -1,6 +1,5 @@
 // Document ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Add confirmation for important actions
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {

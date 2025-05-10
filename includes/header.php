@@ -13,7 +13,7 @@
     <header>
         <div class="header-container">
             <figure class="logo-container">
-                <img src="../assets/imgs/hrms_logo.png" alt="hrms_logo" class="logo">
+                <img src="../../assets/imgs/hrms_logo.png" alt="hrms_logo" class="logo">
                 <figcaption> ——— HRMS</figcaption>
             </figure>
             
@@ -24,7 +24,7 @@
                     <?php if (hasRole('admin') || hasRole('hr')): ?>
                         <a href="/modules/hr/employees.php">Employees</a>
                         <a href="/modules/employee/attendance.php">Attendance</a>
-                        <a href="/modules/hr/leave.php">Leave Requests</a>
+                        <a href="/modules/employee/leave.php">Leave Requests</a>
                     <?php else: ?>
                         <a href="/modules/employee/profile.php">My Profile</a>
                         <a href="/modules/employee/attendance.php">My Attendance</a>

@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $employee = getEmployeeDetails($employeeId);
 ?>
 <?php include '../../includes/header.php'; ?>
+<div class="profile-container">
     <h2>My Profile</h2>
     
     <?php if (isset($success)): ?>
@@ -87,4 +88,6 @@ $employee = getEmployeeDetails($employeeId);
         </div>
         <button type="submit">Update Profile</button>
     </form>
+</div>
+    
 <?php include '../../includes/footer.php'; ?>

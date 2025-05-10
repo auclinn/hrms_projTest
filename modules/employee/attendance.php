@@ -65,103 +65,103 @@ foreach ($attendanceRecords as $record) {
 
 <?php include '../../includes/header.php'; ?>
 <div class="attendance-container">
-<h2>My Attendance</h2>
+    <h2>My Attendance</h2>
 
-<?php if (isset($success)): ?>
-    <div class="success"><?php echo $success; ?></div>
-<?php endif; ?>
-<?php if (isset($error)): ?>
-    <div class="error"><?php echo $error; ?></div>
-<?php endif; ?>
+    <?php if (isset($success)): ?>
+        <div class="success"><?php echo $success; ?></div>
+    <?php endif; ?>
+    <?php if (isset($error)): ?>
+        <div class="error"><?php echo $error; ?></div>
+    <?php endif; ?>
 
-<div class="attendance-actions">
-    <form method="POST" action="attendance.php">
-        <?php if (!$todayRecord): ?>
-            <button type="submit" name="action" value="time_in">Time In</button>
-        <?php elseif (!$todayRecord['time_out']): ?>
-            <button type="submit" name="action" value="time_out">Time Out</button>
-        <?php else: ?>
-            <p>You've completed your attendance for today.</p>
-        <?php endif; ?>
-    </form>
-</div>
+    <div class="attendance-actions">
+        <form method="POST" action="attendance.php">
+            <?php if (!$todayRecord): ?>
+                <button type="submit" name="action" value="time_in">Time In</button>
+            <?php elseif (!$todayRecord['time_out']): ?>
+                <button type="submit" name="action" value="time_out">Time Out</button>
+            <?php else: ?>
+                <p>You've completed your attendance for today.</p>
+            <?php endif; ?>
+        </form>
+    </div>
 
-<h3>This Month's Attendance</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Time In</th>
-            <th>Time Out</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($attendanceRecords as $record): ?>
-            <tr>
-                <td><?php echo $record['date']; ?></td>
-                <td><?php echo $record['time_in']; ?></td>
-                <td><?php echo $record['time_out'] ?: '--'; ?></td>
-                <td><?php echo ucfirst(str_replace('_', ' ', $record['status'])); ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
-
-<?php if ($role === 'admin' || $role === 'hr'): ?>
-    <h3>All Employees' Attendance (Current Month)</h3>
-
-    <form method="GET" action="attendance.php" style="margin-bottom: 1rem;">
-        <label for="filterDate">Filter by date:</label>
-        <input type="date" name="filterDate" id="filterDate" value="<?php echo htmlspecialchars($_GET['filterDate'] ?? date('Y-m-d')); ?>">
-        <button type="submit">Filter</button>
-    </form>
-
-    <?php
-    $filterDate = $_GET['filterDate'] ?? null;
-    $query = "SELECT a.date, a.time_in, a.time_out, a.status, CONCAT(e.first_name, ' ', e.last_name) AS name
-              FROM attendance a 
-              JOIN employees e ON a.employee_id = e.id";
-
-    if ($filterDate) {
-        $query .= " WHERE a.date = ?";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$filterDate]);
-    } else {
-        $query .= " WHERE MONTH(a.date) = MONTH(CURRENT_DATE())";
-        $stmt = $pdo->query($query);
-    }
-
-    $allRecords = $stmt->fetchAll();
-    ?>
-
+    <h3>This Month's Attendance</h3>
     <table>
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Employee Name</th>
                 <th>Time In</th>
                 <th>Time Out</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($allRecords)): ?>
-                <tr><td colspan="5">No records found.</td></tr>
-            <?php else: ?>
-                <?php foreach ($allRecords as $record): ?>
-                    <tr>
-                        <td><?php echo $record['date']; ?></td>
-                        <td><?php echo htmlspecialchars($record['name']); ?></td>
-                        <td><?php echo $record['time_in']; ?></td>
-                        <td><?php echo $record['time_out'] ?: '--'; ?></td>
-                        <td><?php echo ucfirst($record['status']); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
+            <?php foreach ($attendanceRecords as $record): ?>
+                <tr>
+                    <td><?php echo $record['date']; ?></td>
+                    <td><?php echo $record['time_in']; ?></td>
+                    <td><?php echo $record['time_out'] ?: '--'; ?></td>
+                    <td><?php echo ucfirst(str_replace('_', ' ', $record['status'])); ?></td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
-<?php endif; ?>
+
+    <?php if ($role === 'admin' || $role === 'hr'): ?>
+        <h3>All Employees' Attendance (Current Month)</h3>
+
+        <form method="GET" action="attendance.php" style="margin-bottom: 1rem;">
+            <label for="filterDate">Filter by date:</label>
+            <input type="date" name="filterDate" id="filterDate" value="<?php echo htmlspecialchars($_GET['filterDate'] ?? date('Y-m-d')); ?>">
+            <button type="submit">Filter</button>
+        </form>
+
+        <?php
+        $filterDate = $_GET['filterDate'] ?? null;
+        $query = "SELECT a.date, a.time_in, a.time_out, a.status, CONCAT(e.first_name, ' ', e.last_name) AS name
+                FROM attendance a 
+                JOIN employees e ON a.employee_id = e.id";
+
+        if ($filterDate) {
+            $query .= " WHERE a.date = ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$filterDate]);
+        } else {
+            $query .= " WHERE MONTH(a.date) = MONTH(CURRENT_DATE())";
+            $stmt = $pdo->query($query);
+        }
+
+        $allRecords = $stmt->fetchAll();
+        ?>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Employee Name</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($allRecords)): ?>
+                    <tr><td colspan="5">No records found.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($allRecords as $record): ?>
+                        <tr>
+                            <td><?php echo $record['date']; ?></td>
+                            <td><?php echo htmlspecialchars($record['name']); ?></td>
+                            <td><?php echo $record['time_in']; ?></td>
+                            <td><?php echo $record['time_out'] ?: '--'; ?></td>
+                            <td><?php echo ucfirst($record['status']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </div>
 
 <?php include '../../includes/footer.php'; ?>
