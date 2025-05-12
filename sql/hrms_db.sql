@@ -1,5 +1,4 @@
 CREATE DATABASE hrms_db;
-USE hrms_db;
 
 -- Users table
 CREATE TABLE users (
@@ -24,7 +23,6 @@ CREATE TABLE employees (
     phone VARCHAR(20) NOT NULL,
     department VARCHAR(50) NOT NULL,
     position VARCHAR(50) NOT NULL,
-    salary DECIMAL(10,2) NOT NULL,
     hire_date DATE NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -58,17 +56,24 @@ CREATE TABLE leave_requests (
 );
 
 ---------------------------------------------------
+---------------------------------------------------
+-- !! do not run these yetttttt, make hashed passwords muna
+
 
 -- base users for testing
 -- admin pw: admin123
 -- hr pw: hr123
 -- emp pw: emp2
-insert into users (username, password, role, email) 
-values ('admin', '$2y$10$A5WbBsWhgDlBocvFShOJtugC.f2l8j0TYUGQl3PQXtHFpV9g61.b6', 'admin', 'admin@example.com'),
-        ('hr1', '$2y$10$u0eSzBtYCZXnS9iSslc4U..bbcoN.TGcEkZQIC9sW5A5pnNxAEYp2', 'hr', 'hr1@example.com'),
-        ('emp2', '$2y$10$GEVvyHcEWRdHIBumsmWw5ej9r8DMi.qqOuDsbMylN2XNCYCnbuoBy', 'employee', 'emp2@example.com');
 
-insert into employees(user_id, first_name, last_name, gender, dob, address, phone, department, position, salary, hire_date)
-values (1, 'Ad', 'Min', 'female', '1990-01-21', 'padre garcia', '0999999998', 'executive', 'administrative officer', 60000.00, '2020-03-04'),
-       (2, 'H', 'R', 'female', '1997-11-20', 'rosario', '0987654321', 'human resource', 'hr manager', 45000.00, '2022-08-08'),
-       (3, 'Emp', 'Loyee', 'male', '1992-05-09', 'lipa', '09999999999', 'IT', 'Tech Support', 30000.00, '2025-05-09');
+--for the hashed passwords, punta muna sa gen_hash.php then copy paste ↓
+
+
+insert into users (username, password, role, email) 
+values ('admin', 'paste dito ung password from gen_hash.php', 'admin', 'admin@example.com'),
+        ('hr1', 'paste dito ung password from gen_hash.php', 'hr', 'hr1@example.com'),
+        ('emp2', 'paste dito ung password from gen_hash.php', 'employee', 'emp2@example.com');
+
+insert into employees(user_id, first_name, last_name, gender, dob, address, phone, department, position, hire_date)
+values (1, 'Ad', 'Min', 'female', '1990-01-21', 'padre garcia', '0999999998', 'executive', 'administrative officer', '2020-03-04'),
+       (2, 'H', 'R', 'female', '1997-11-20', 'rosario', '0987654321', 'human resource', 'hr manager', '2022-08-08'),
+       (3, 'Emp', 'Loyee', 'male', '1992-05-09', 'lipa', '09999999999', 'IT', 'Tech Support', '2025-05-09');

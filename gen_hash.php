@@ -3,12 +3,23 @@
 // hr pw = hr123
 // employee pw = emp2
 
-//i cant remember the passwords i made for user templates so here is the script kekw
-$plainPassword = 'emp123'; //change to check hashed pw to see if same sha sa db
-$hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+//i cant remember the passwords i made for user templates so here is the script
+$plainPassword1 = 'admin123';
+$hashedPassword1 = password_hash($plainPassword1, PASSWORD_DEFAULT);
 
-echo "Hashed password: " . $hashedPassword;
+$plainPassword2 = 'hr123'; 
+$hashedPassword2 = password_hash($plainPassword2, PASSWORD_DEFAULT);
 
-//php gen_hash.php to see the hashed password then compare it to the db
+$plainPassword3 = 'emp2';
+$hashedPassword3 = password_hash($plainPassword3, PASSWORD_DEFAULT);
+
+echo "Admin password: " . $hashedPassword1;
+echo "\n";
+echo "HR password: " . $hashedPassword2;
+echo "\n";
+echo "Employee password: " . $hashedPassword3;
+
+//THEN RUN on terminal (git bash): 
+//   php gen_hash.php (or "C:/xampp/php/php.exe" gen_hash.php if mag error ng php command not found)
 ?>
 
