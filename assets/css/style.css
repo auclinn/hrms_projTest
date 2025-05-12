@@ -232,6 +232,16 @@ table tr:hover {
 /*        PAGE SPECIFIC STYLINGGG        */
 /* ===================================== */
 
+/* header */
+.curr-time-container {
+    text-align: end;
+    margin: auto 0 0 0;
+}
+
+.curr-time-container p{
+    margin: 0;
+}
+
 /* ---------- Login page specific stuff */
 .login-container {
     display: flex;
@@ -308,7 +318,32 @@ color: transparent;
     /* here din */
 
 /* ---------- Attendance specific styling */
-    /* also hir */
+.attendance-clocking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}    
+
+.attendance-clocking h2 {
+    margin-bottom: 0;
+}
+
+.attendance-list-filter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.attendance-list-filter input[type="date"] {
+    width: 30%;
+}
+
+.attendance-list-filter label {
+    margin: 0;
+}
 
 /* Responsiveness */
 @media (max-width: 767px) {

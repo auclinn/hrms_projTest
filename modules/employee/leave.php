@@ -105,6 +105,7 @@ $leaveRequests = $stmt->fetchAll();
     </div>
 
     <?php if ($role === 'admin' || $role === 'hr'): ?>
+    <hr>
     <h2>All Leave Requests</h2>
 
     <?php

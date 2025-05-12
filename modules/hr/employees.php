@@ -20,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_employee'])) {
     $phone = sanitize($_POST['phone']);
     $department = sanitize($_POST['department']);
     $position = sanitize($_POST['position']);
-    $salary = sanitize($_POST['salary']);
     $hireDate = sanitize($_POST['hire_date']);
     
     try {
@@ -34,11 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_employee'])) {
         // Create employee
         $stmt = $pdo->prepare("INSERT INTO employees 
             (user_id, first_name, last_name, gender, dob, address, phone, 
-            department, position, salary, hire_date) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            department, position, hire_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $userId, $firstName, $lastName, $gender, $dob, $address, $phone,
-            $department, $position, $salary, $hireDate
+            $department, $position, $hireDate
         ]);
         
         $pdo->commit();
@@ -125,19 +124,15 @@ $employees = getAllEmployees();
                 <input type="text" id="position" name="position" required>
             </div>
             <div>
-                <label for="salary">Salary:</label>
-                <input type="number" id="salary" name="salary" step="0.01" required>
-            </div>
-            <div>
                 <label for="hire_date">Hire Date:</label>
                 <input type="date" id="hire_date" name="hire_date" required>
             </div>
             <button type="submit" name="add_employee">Add Employee</button>
         </form>
     </div>
-    
+    <hr>
     <div class="employee-list">
-        <h3>Employee List</h3>
+        <h2>Employee List</h2>
         <table>
             <thead>
                 <tr>

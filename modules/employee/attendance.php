@@ -65,7 +65,8 @@ foreach ($attendanceRecords as $record) {
 
 <?php include '../../includes/header.php'; ?>
 <div class="attendance-container">
-    <h2>My Attendance</h2>
+    <div class="attendance-clocking">
+        <h2>My Attendance</h2>
 
     <?php if (isset($success)): ?>
         <div class="success"><?php echo $success; ?></div>
@@ -85,8 +86,10 @@ foreach ($attendanceRecords as $record) {
             <?php endif; ?>
         </form>
     </div>
-
-    <h3>This Month's Attendance</h3>
+    </div>
+    
+    <hr>
+    <h2>Personal Attendance</h2>
     <table>
         <thead>
             <tr>
@@ -107,15 +110,18 @@ foreach ($attendanceRecords as $record) {
             <?php endforeach; ?>
         </tbody>
     </table>
-
+    
     <?php if ($role === 'admin' || $role === 'hr'): ?>
-        <h3>All Employees' Attendance (Current Month)</h3>
+        <hr>
+        <h2>All Employees' Attendance (Current Month)</h2>
 
-        <form method="GET" action="attendance.php" style="margin-bottom: 1rem;">
+        
+        <form method="GET" action="attendance.php" style="margin-bottom: 1rem;" class="attendance-list-filter">
             <label for="filterDate">Filter by date:</label>
             <input type="date" name="filterDate" id="filterDate" value="<?php echo htmlspecialchars($_GET['filterDate'] ?? date('Y-m-d')); ?>">
             <button type="submit">Filter</button>
         </form>
+        
 
         <?php
         $filterDate = $_GET['filterDate'] ?? null;

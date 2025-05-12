@@ -8,6 +8,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
     </style>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        setInterval(updateClock, 1000);
+        window.onload = updateClock;
+    </script>
 </head>
 <body>
     <header>
@@ -16,7 +26,6 @@
                 <img src="../../assets/imgs/hrms_logo.png" alt="hrms_logo" class="logo">
                 <figcaption> ——— HRMS</figcaption>
             </figure>
-            
             <nav>
                 <?php if (isLoggedIn()): ?>
                     <span>Welcome, <?php echo $_SESSION['username']; ?> (<?php echo ucfirst($_SESSION['role']); ?>) | </span>
@@ -35,6 +44,10 @@
                     <!-- <a href="/login.php">Login</a> -->
                 <?php endif; ?>
             </nav>
+            <div class="curr-time-container">
+                <p>Time:</p>
+                <p id="clock"></p>
+            </div>
         </div>
     </header>
     <main class="container">

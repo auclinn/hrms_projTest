@@ -16,7 +16,7 @@ try {
 }
 
 // Set timezone
-date_default_timezone_set('UTC');
+date_default_timezone_set('Asia/Manila');
 
 // Security settings
 define('SALT', 'your_random_salt_here'); // Change this to a random string
