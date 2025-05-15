@@ -12,14 +12,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = sanitize($_POST['username']);
     $password = $_POST['password'];
 
-    if (login($username, $password)) {
-         // Setup dual role session
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        
+        // Log successful login
+        logAction($pdo, 'Login', 'User logged in successfully');
+        
+        // Setup dual role session
         $_SESSION['default_role'] = 'employee';
-        $_SESSION['active_role'] = $_SESSION['role']; // Start in main role (hr, manager, etc.)
+        $_SESSION['active_role'] = $_SESSION['role'];
         
         header("Location: index.php");
         exit();
     } else {
+        // Log failed login attempt
+        logAction($pdo, 'login_failed', 'Invalid credentials for username: '.$username);
         $error = 'Invalid username or password';
     }
 }

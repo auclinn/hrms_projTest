@@ -42,3 +42,9 @@ function getAllEmployees() {
 function isHRorAdmin() {
     return isLoggedIn() && ($_SESSION['role'] === 'hr' || $_SESSION['role'] === 'admin');
 }
+
+function logAction($pdo, $action, $details = null) {
+    $username = $_SESSION['username'] ?? 'unknown';
+    $stmt = $pdo->prepare("INSERT INTO auditlogs (username, action, details) VALUES (?, ?, ?)");
+    $stmt->execute([$username, $action, $details]);
+}

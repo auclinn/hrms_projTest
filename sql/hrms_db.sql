@@ -55,6 +55,15 @@ CREATE TABLE leave_requests (
     FOREIGN KEY (processed_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
+-- Audit logs table
+CREATE TABLE auditlogs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    action VARCHAR(255) NOT NULL,
+    details TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+);
 ---------------------------------------------------
 ---------------------------------------------------
 -- !! do not run these yetttttt, make hashed passwords muna

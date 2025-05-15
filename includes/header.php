@@ -47,6 +47,9 @@
                         <?php if (in_array($_SESSION['active_role'], ['hr', 'admin'])): ?>
                             <a href="/modules/hr/employees.php">Employees</a>
                         <?php endif; ?>
+                        <?php if (($_SESSION['active_role'] ?? '') === 'admin'): ?>
+                            <a href="/modules/admin/auditlog.php">Audit Log</a>
+                        <?php endif; ?>
                         <a href="/modules/employee/attendance.php">Attendance</a>
                         <a href="/modules/employee/leave.php">Leave Requests</a>
                     <?php endif; ?>
