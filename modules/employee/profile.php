@@ -22,8 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$firstName, $lastName, $gender, $dob, $address, $phone, $employeeId]);
         
         $success = "Profile updated successfully!";
+        logAction($pdo, 'profile_update', 'Updated profile information');
     } catch (PDOException $e) {
         $error = "Error updating profile: " . $e->getMessage();
+        logAction($pdo, 'profile_update_failed', $e->getMessage());
     }
 }
 

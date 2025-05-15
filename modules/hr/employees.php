@@ -42,9 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_employee'])) {
         
         $pdo->commit();
         $success = "Employee added successfully!";
+        logAction($pdo, 'add_employee', 'Added employee: ' . $firstName . ' ' . $lastName);
     } catch (PDOException $e) {
         $pdo->rollBack();
         $error = "Error adding employee: " . $e->getMessage();
+        logAction($pdo, 'add_employee_error', 'Failed to add a new employee. '. $e->getMessage());
     }
 }
 
@@ -362,11 +364,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_employee'])) {
         $pdo->commit();
         // Set indicator for success
         $edit_success = "Employee updated successfully!";
+        logAction($pdo, 'edit_employee', 'Updated employee: ' . $firstName . ' ' . $lastName . ' (ID: ' . $employeeId . ')');
         // Refresh employee list after update
         $employees = getAllEmployees();
     } catch (PDOException $e) {
         $pdo->rollBack();
         $edit_error = "Error updating employee: " . $e->getMessage();
+        logAction($pdo, 'edit_employee_error', 'Failed to update employee (ID: ' . $employeeId . '). ' . $e->getMessage());
     }
 }
 ?>

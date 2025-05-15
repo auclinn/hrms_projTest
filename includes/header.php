@@ -55,19 +55,24 @@
                     <?php endif; ?>
 
                     <!-- Role Switching -->
-                    <?php if ($_SESSION['role'] !== 'employee'): ?>
-                        <?php if (($_SESSION['active_role'] ?? 'employee') === 'employee'): ?>
+                    <?php
+                    if ($_SESSION['role'] !== 'employee'):
+                        global $pdo;
+                        if (($_SESSION['active_role'] ?? 'employee') === 'employee'): ?>
                             <a href="/switch_role.php?as=<?php echo $_SESSION['role']; ?>">
                                 Switch to <?php echo ucfirst($_SESSION['role']); ?> Mode
                             </a>
+
                         <?php else: ?>
                             <a href="/switch_role.php?as=employee">
                                 Switch to Employee Mode
                             </a>
-                        <?php endif; ?>
+
+                        <?php endif;
+                    endif;
+                    ?>
                     <?php endif; ?>
                     <a href="/logout.php">Logout</a>
-                <?php endif; ?>
             </nav>
 
             <div class="curr-time-container">

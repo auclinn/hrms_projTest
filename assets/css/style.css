@@ -228,6 +228,28 @@ table tr:hover {
     font-size: 18px;
 }
 
+/* pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.pagination a {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Add hover fill color */
+.pagination a:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease;
+}
+
 /* ===================================== */
 /*        PAGE SPECIFIC STYLINGGG        */
 /* ===================================== */
@@ -304,7 +326,7 @@ color: transparent;
 }
 
 /* ---- pages common container styling */
-.dashboard-container, .employee-mgt-container, .attendance-container, .profile-container, .leave-container {
+.dashboard-container, .employee-mgt-container, .attendance-container, .profile-container, .leave-container, .auditlog-container {
     width: 95%;
     background-color: white;
     border-radius: 0.5rem;
@@ -343,6 +365,20 @@ color: transparent;
 
 .attendance-list-filter label {
     margin: 0;
+}
+/* ---------- audit log styling */
+.auditfilter-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.auditfilter-form{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
 }
 
 /* Responsiveness */

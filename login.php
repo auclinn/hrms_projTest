@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['role'] = $user['role'];
         
         // Log successful login
-        logAction($pdo, 'Login', 'User logged in successfully');
+        logAction($pdo, 'login', 'User logged in successfully');
         
         // Setup dual role session
         $_SESSION['default_role'] = 'employee';
