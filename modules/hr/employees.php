@@ -3,7 +3,7 @@ require_once '../../includes/config.php';
 require_once '../../includes/auth.php';
 require_once '../../includes/functions.php';
 
-requireRole(['admin', 'hr']);
+requireRole(['admin', 'hr', 'manager']);
 
 // Handle employee creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_employee'])) {
@@ -61,75 +61,99 @@ $employees = getAllEmployees();
     <?php if (isset($error)): ?>
         <div class="error"><?php echo $error; ?></div>
     <?php endif; ?>
-    
-    <div class="add-employee">
-        <h3>Add New Employee</h3>
-        <form method="POST" action="employees.php">
-            <div>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <div>
-                <label for="role">Role:</label>
-                <select id="role" name="role" required>
-                    <option value="employee">Employee</option>
-                    <option value="hr">HR</option>
-                    <?php if (hasRole('admin')): ?>
-                        <option value="admin">Admin</option>
-                    <?php endif; ?>
-                </select>
-            </div>
-            <div>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div>
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" required>
-            </div>
-            <div>
-                <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="last_name" required>
-            </div>
-            <div>
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div>
-                <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" required>
-            </div>
-            <div>
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" required></textarea>
-            </div>
-            <div>
-                <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone" required>
-            </div>
-            <div>
-                <label for="department">Department:</label>
-                <input type="text" id="department" name="department" required>
-            </div>
-            <div>
-                <label for="position">Position:</label>
-                <input type="text" id="position" name="position" required>
-            </div>
-            <div>
-                <label for="hire_date">Hire Date:</label>
-                <input type="date" id="hire_date" name="hire_date" required>
-            </div>
-            <button type="submit" name="add_employee">Add Employee</button>
-        </form>
+
+    <!-- Trigger Button -->
+    <button id="openAddEmployeeModal" type="button">Add New Employee</button>
+
+    <!-- Modal Structure -->
+    <div id="addEmployeeModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
+        <div class="modal-content" style="background:#fff; margin:5% auto; padding:20px; border-radius:5px; width:90%; max-width:600px; position:relative;">
+            <span id="closeAddEmployeeModal" style="position:absolute; top:10px; right:20px; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+            <h3>Add New Employee</h3>
+            <form method="POST" action="employees.php">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div>
+                    <label for="role">Role:</label>
+                    <select id="role" name="role" required>
+                        <option value="employee">Employee</option>
+                        <option value="hr">HR</option>
+                        <option value="manager">Manager</option>
+                        <?php if (hasRole('admin')): ?>
+                            <option value="admin">Admin</option>
+                        <?php endif; ?>
+                    </select>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div>
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div>
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="dob">Date of Birth:</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+                <div>
+                    <label for="address">Address:</label>
+                    <textarea id="address" name="address" required></textarea>
+                </div>
+                <div>
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div>
+                    <label for="department">Department:</label>
+                    <input type="text" id="department" name="department" required>
+                </div>
+                <div>
+                    <label for="position">Position:</label>
+                    <input type="text" id="position" name="position" required>
+                </div>
+                <div>
+                    <label for="hire_date">Hire Date:</label>
+                    <input type="date" id="hire_date" name="hire_date" required>
+                </div>
+                <button type="submit" name="add_employee">Add Employee</button>
+            </form>
+        </div>
     </div>
+
+    <script>
+    // Modal open/close logic
+    document.getElementById('openAddEmployeeModal').onclick = function() {
+        document.getElementById('addEmployeeModal').style.display = 'block';
+    };
+    document.getElementById('closeAddEmployeeModal').onclick = function() {
+        document.getElementById('addEmployeeModal').style.display = 'none';
+    };
+    window.onclick = function(event) {
+        var modal = document.getElementById('addEmployeeModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+    </script>
     <hr>
     <div class="employee-list">
         <h2>Employee List</h2>

@@ -39,27 +39,33 @@ $leaveRequests = $stmt->fetchAll();
 ?>
 <?php include '../../includes/header.php'; ?>
 <div class="leave-container">
-    <h2>My Leave Requests</h2>
     
-    <?php if (isset($success)): ?>
-        <div class="success"><?php echo $success; ?></div>
-    <?php endif; ?>
-    <?php if (isset($error)): ?>
-        <div class="error"><?php echo $error; ?></div>
-    <?php endif; ?>
     
-    <div class="leave-form">
-        <h3>Request Leave</h3>
-        <form method="POST" action="leave.php">
-            <div>
+    <?php if ($role === 'employee'): ?>
+        <?php if (isset($success)): ?>
+            <div class="success"><?php echo $success; ?></div>
+        <?php endif; ?>
+        <?php if (isset($error)): ?>
+            <div class="error"><?php echo $error; ?></div>
+        <?php endif; ?>
+        <h2>My Leave Requests</h2>
+        <button id="openLeaveModal" type="button">Create new leave request</button>
+
+        <!-- Leave Request Modal -->
+        <div id="leaveModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
+            <div class="modal-content" style="background:#fff; margin:10% auto; padding:20px; border:1px solid #888; width:400px; position:relative;">
+            <span id="closeLeaveModal" style="color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+            <h3>Request Leave</h3>
+            <form method="POST" action="leave.php">
+                <div>
                 <label for="start_date">Start Date:</label>
                 <input type="date" id="start_date" name="start_date" required>
-            </div>
-            <div>
+                </div>
+                <div>
                 <label for="end_date">End Date:</label>
                 <input type="date" id="end_date" name="end_date" required>
-            </div>
-            <div>
+                </div>
+                <div>
                 <label for="type">Leave Type:</label>
                 <select id="type" name="type" required>
                     <option value="vacation">Vacation</option>
@@ -67,44 +73,63 @@ $leaveRequests = $stmt->fetchAll();
                     <option value="personal">Personal Leave</option>
                     <option value="other">Other</option>
                 </select>
-            </div>
-            <div>
+                </div>
+                <div>
                 <label for="reason">Reason:</label>
                 <textarea id="reason" name="reason" required></textarea>
+                </div>
+                <button type="submit" name="submit_leave">Submit Request</button>
+            </form>
             </div>
-            <button type="submit" name="submit_leave">Submit Request</button>
-        </form>
-    </div>
-    
-    <div class="leave-requests">
-        <h3>My Leave History</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Type</th>
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <th>Submitted On</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($leaveRequests as $request): ?>
+        </div>
+        <script>
+        document.getElementById('openLeaveModal').onclick = function() {
+            document.getElementById('leaveModal').style.display = 'block';
+        };
+        document.getElementById('closeLeaveModal').onclick = function() {
+            document.getElementById('leaveModal').style.display = 'none';
+        };
+        window.onclick = function(event) {
+            var modal = document.getElementById('leaveModal');
+            if (event.target == modal) {
+            modal.style.display = 'none';
+            }
+        };
+        </script>
+        
+        <div class="leave-requests">
+            <h3>My Leave History</h3>
+            <table>
+                <thead>
                     <tr>
-                        <td><?php echo $request['start_date']; ?></td>
-                        <td><?php echo $request['end_date']; ?></td>
-                        <td><?php echo ucfirst($request['type']); ?></td>
-                        <td><?php echo $request['reason']; ?></td>
-                        <td><?php echo ucfirst($request['status']); ?></td>
-                        <td><?php echo $request['created_at']; ?></td>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Submitted On</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    <?php foreach ($leaveRequests as $request): ?>
+                        <tr>
+                            <td><?php echo $request['start_date']; ?></td>
+                            <td><?php echo $request['end_date']; ?></td>
+                            <td><?php echo ucfirst($request['type']); ?></td>
+                            <td><?php echo $request['reason']; ?></td>
+                            <td><?php echo ucfirst($request['status']); ?></td>
+                            <td><?php echo $request['created_at']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 
-    <?php if ($role === 'admin' || $role === 'hr'): ?>
+
+
+
+    <?php if ($role === 'admin' || $role === 'hr' || $role === 'manager'): ?>
     <hr>
     <h2>All Leave Requests</h2>
 

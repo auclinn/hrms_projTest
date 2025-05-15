@@ -71,20 +71,13 @@ $employee = getEmployeeDetails($employeeId);
             <input type="tel" id="phone" name="phone" value="<?php echo $employee['phone']; ?>" required>
         </div>
         <div>
-            <label>Department:</label>
-            <input type="text" value="<?php echo $employee['department']; ?>" readonly>
+            <label>Department: <?php echo $employee['department']; ?> </label>
         </div>
         <div>
-            <label>Position:</label>
-            <input type="text" value="<?php echo $employee['position']; ?>" readonly>
+            <label>Position: <?php echo $employee['position']; ?></label>
         </div>
         <div>
-            <label>Salary:</label>
-            <input type="text" value="<?php echo number_format($employee['salary'], 2); ?>" readonly>
-        </div>
-        <div>
-            <label>Hire Date:</label>
-            <input type="text" value="<?php echo $employee['hire_date']; ?>" readonly>
+            <label>Hire Date: <?php echo $employee['hire_date']; ?> </label>
         </div>
         <button type="submit">Update Profile</button>
     </form>

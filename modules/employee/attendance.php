@@ -7,44 +7,6 @@ requireLogin();
 $employeeId = getEmployeeId();
 $role = $_SESSION['role'] ?? 'employee';
 
-// mark attendance
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    $today = date('Y-m-d');
-
-    if ($_POST['action'] === 'time_in') {
-        try {
-            $stmt = $pdo->prepare("SELECT id FROM attendance WHERE employee_id = ? AND date = ?");
-            $stmt->execute([$employeeId, $today]);
-
-            if ($stmt->rowCount() === 0) {
-                $status = (time() > strtotime('09:00:00')) ? 'late' : 'present';
-
-                $stmt = $pdo->prepare("INSERT INTO attendance (employee_id, date, time_in, status) 
-                    VALUES (?, ?, NOW(), ?)");
-                $stmt->execute([$employeeId, $today, $status]);
-                $success = "Time in recorded successfully!";
-            } else {
-                $error = "You have already timed in today.";
-            }
-        } catch (PDOException $e) {
-            $error = "Error recording time in: " . $e->getMessage();
-        }
-    } elseif ($_POST['action'] === 'time_out') {
-        try {
-            $stmt = $pdo->prepare("UPDATE attendance SET time_out = NOW() 
-                WHERE employee_id = ? AND date = ? AND time_out IS NULL");
-            $stmt->execute([$employeeId, $today]);
-
-            if ($stmt->rowCount() > 0) {
-                $success = "Time out recorded successfully!";
-            } else {
-                $error = "You haven't timed in yet or already timed out.";
-            }
-        } catch (PDOException $e) {
-            $error = "Error recording time out: " . $e->getMessage();
-        }
-    }
-}
 
 // get current user's attendance records for the month
 $stmt = $pdo->prepare("SELECT * FROM attendance 
@@ -65,28 +27,7 @@ foreach ($attendanceRecords as $record) {
 
 <?php include '../../includes/header.php'; ?>
 <div class="attendance-container">
-    <div class="attendance-clocking">
-        <h2>My Attendance</h2>
-
-    <?php if (isset($success)): ?>
-        <div class="success"><?php echo $success; ?></div>
-    <?php endif; ?>
-    <?php if (isset($error)): ?>
-        <div class="error"><?php echo $error; ?></div>
-    <?php endif; ?>
-
-    <div class="attendance-actions">
-        <form method="POST" action="attendance.php">
-            <?php if (!$todayRecord): ?>
-                <button type="submit" name="action" value="time_in">Time In</button>
-            <?php elseif (!$todayRecord['time_out']): ?>
-                <button type="submit" name="action" value="time_out">Time Out</button>
-            <?php else: ?>
-                <p>You've completed your attendance for today.</p>
-            <?php endif; ?>
-        </form>
-    </div>
-    </div>
+    
     
     <hr>
     <h2>Personal Attendance</h2>

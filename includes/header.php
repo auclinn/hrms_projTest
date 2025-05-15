@@ -24,13 +24,13 @@
         <div class="header-container">
             <figure class="logo-container">
                 <img src="../../assets/imgs/hrms_logo.png" alt="hrms_logo" class="logo">
-                <figcaption> ——— HRMS</figcaption>
+                <!-- <figcaption> ——— HRMS</figcaption> -->
             </figure>
             <nav>
                 <?php if (isLoggedIn()): ?>
                     <span>Welcome, <?php echo $_SESSION['username']; ?> (<?php echo ucfirst($_SESSION['role']); ?>) | </span>
                     <a href="/index.php">Dashboard</a>
-                    <?php if (hasRole('admin') || hasRole('hr')): ?>
+                    <?php if (hasRole('admin') || hasRole('hr') || hasRole('manager')): ?>
                         <a href="/modules/hr/employees.php">Employees</a>
                         <a href="/modules/employee/attendance.php">Attendance</a>
                         <a href="/modules/employee/leave.php">Leave Requests</a>

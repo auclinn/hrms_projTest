@@ -5,7 +5,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'hr', 'employee') NOT NULL,
+    role ENUM('admin', 'hr', 'manager', 'employee') NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL
@@ -72,8 +72,10 @@ insert into users (username, password, role, email)
 values ('admin', 'paste dito ung password from gen_hash.php', 'admin', 'admin@example.com'),
         ('hr1', 'paste dito ung password from gen_hash.php', 'hr', 'hr1@example.com'),
         ('emp2', 'paste dito ung password from gen_hash.php', 'employee', 'emp2@example.com');
+        ('manager', 'paste dito ung password from gen_hash.php', 'manager', 'manager@mail.com');
 
 insert into employees(user_id, first_name, last_name, gender, dob, address, phone, department, position, hire_date)
 values (1, 'Ad', 'Min', 'female', '1990-01-21', 'padre garcia', '0999999998', 'executive', 'administrative officer', '2020-03-04'),
        (2, 'H', 'R', 'female', '1997-11-20', 'rosario', '0987654321', 'human resource', 'hr manager', '2022-08-08'),
        (3, 'Emp', 'Loyee', 'male', '1992-05-09', 'lipa', '09999999999', 'IT', 'Tech Support', '2025-05-09');
+       (4, 'Mana', 'Ger', 'male', '1984-06-01', 'lipa', '09999999999', 'IT', 'IT manager', '2025-05-09');
