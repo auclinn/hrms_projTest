@@ -5,8 +5,8 @@ require_once '../../includes/functions.php';
 
 requireLogin();
 $employeeId = getEmployeeId();
-$role = $_SESSION['role'] ?? 'employee';
-
+// $role = $_SESSION['role'] ?? 'employee';
+$activeRole = $_SESSION['active_role'] ?? 'employee';
 
 // get current user's attendance records for the month
 $stmt = $pdo->prepare("SELECT * FROM attendance 
@@ -52,7 +52,7 @@ foreach ($attendanceRecords as $record) {
         </tbody>
     </table>
     
-    <?php if ($role === 'admin' || $role === 'hr'): ?>
+    <?php if ($activeRole === 'admin' || $activeRole === 'hr'): ?>
         <hr>
         <h2>All Employees' Attendance (Current Month)</h2>
 

@@ -5,7 +5,8 @@ require_once '../../includes/functions.php';
 
 requireLogin();
 $employeeId = getEmployeeId();
-$role = $_SESSION['role'] ?? 'employee';
+// $role = $_SESSION['role'] ?? 'employee';
+$activeRole = $_SESSION['active_role'] ?? 'employee';
 
 // handle leave request submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_leave'])) {
@@ -41,7 +42,7 @@ $leaveRequests = $stmt->fetchAll();
 <div class="leave-container">
     
     
-    <?php if ($role === 'employee'): ?>
+    <?php if ($activeRole === 'employee'): ?>
         <?php if (isset($success)): ?>
             <div class="success"><?php echo $success; ?></div>
         <?php endif; ?>
@@ -129,7 +130,7 @@ $leaveRequests = $stmt->fetchAll();
 
 
 
-    <?php if ($role === 'admin' || $role === 'hr' || $role === 'manager'): ?>
+    <?php if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager'): ?>
     <hr>
     <h2>All Leave Requests</h2>
 

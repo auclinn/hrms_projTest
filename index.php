@@ -5,9 +5,10 @@ require_once 'includes/functions.php';
 
 
 requireLogin();
+$activeRole = $_SESSION['active_role'] ?? 'employee';
 
 // Get stats based on role
-if (hasRole('admin') || hasRole('hr')) {
+if (hasRole('admin') || hasRole('hr') || hasRole('manager')) {
     // Get total employees
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM employees");
     $totalEmployees = $stmt->fetch()['total'];
@@ -104,7 +105,7 @@ foreach ($attendanceRecords as $record) {
 <div class="dashboard-container">
     <h2>Dashboard</h2>
     
-    <?php if (hasRole('admin')): ?>
+    <?php if ($activeRole === 'admin'): ?>
         <div class="stats">
             <div class="stat-card">
                 <h3>Audit Log</h3>
@@ -120,7 +121,7 @@ foreach ($attendanceRecords as $record) {
             </div>
             <!-- Add more admin-specific stats here if needed -->
         </div>
-    <?php elseif (hasRole('hr')): ?>
+    <?php elseif ($activeRole === 'hr'): ?>
         <div class="stats">
             <div class="stat-card">
                 <h3>Total Employees</h3>
@@ -133,10 +134,10 @@ foreach ($attendanceRecords as $record) {
             <!-- Add more HR-specific stats here if needed -->
         </div>
 
-    <?php elseif (hasRole('manager')): ?>
+    <?php elseif ($activeRole === 'manager'): ?>
         <div class="stats">
             <div class="stat-card">
-                <h3>Total Employees</h3>
+                <h3>Team Employees</h3>
                 <p><?php echo $totalEmployees; ?></p>
             </div>
             <div class="stat-card">

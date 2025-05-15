@@ -13,6 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     if (login($username, $password)) {
+         // Setup dual role session
+        $_SESSION['default_role'] = 'employee';
+        $_SESSION['active_role'] = $_SESSION['role']; // Start in main role (hr, manager, etc.)
+        
         header("Location: index.php");
         exit();
     } else {
