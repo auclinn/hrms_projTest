@@ -102,14 +102,26 @@ nav span {
 }
 
 /* --------header styling */
+/* Default header color (for employee) */
 header {
-    background-color: #1a2859;
+    background-color: #1a2859; /* Original blue */
     color: white;
     padding: 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
+}
+
+/* HR/Manager header color */
+body[data-role="hr"] header,
+body[data-role="manager"] header {
+    background-color: #0f1a3d; /* Darker blue */
+}
+
+/* Admin header color */
+body[data-role="admin"] header {
+    background-color: #0a1129; /* Almost black-blue */
 }
 
 .header-container {
@@ -1557,6 +1569,9 @@ table tr:hover {
     border-radius: 0.5rem;
     margin-bottom: 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .evaluation-container form label {
@@ -1641,7 +1656,191 @@ table tr:hover {
     font-weight: 500;
 }
 
+.sched-eval-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
 
+.evaluation-form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    width: 20rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.rating-criterion {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rating-criterion label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #1a2859;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #d1d5db;
+    font-size: 1.5rem;
+    padding: 0 0.1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating input:checked ~ label,
+.star-rating input:hover ~ label,
+.star-rating label:hover {
+    color: #f59e0b;
+}
+
+.comments-section {
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.comments-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #1a2859;
+}
+
+.comments-section textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: 0.4rem;
+    background: #f8fafc;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.submit-btn {
+    background: linear-gradient(90deg, #2c3e50, #255586);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(90deg, #255586, #2c3e50);
+}
+
+.cancel-link {
+    color: #4b5563;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.4rem;
+    transition: all 0.2s;
+}
+
+.cancel-link:hover {
+    background-color: #f3f4f6;
+    text-decoration: underline;
+}
+
+/* Evaluation details modal */
+.eval-details-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.eval-details-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: modalFadeIn 0.3s ease;
+}
+
+.eval-details-content h3 {
+    margin-top: 0;
+    color: #1a2859;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.eval-detail-row {
+    margin-bottom: 1rem;
+}
+
+.eval-detail-row label {
+    font-weight: 600;
+    color: #1a2859;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.eval-detail-row .stars {
+    color: #f59e0b;
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+}
+
+.close-modal-btn {
+    background: #1a2859;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    float: right;
+}
+
+/* See Details link in table */
+.see-details {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.see-details:hover {
+    text-decoration: underline;
+}
 
 
 

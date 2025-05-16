@@ -97,9 +97,12 @@ if ($activeRole === 'hr') {
     <h2>Performance Evaluations</h2>
 
     <?php if ($activeRole === 'hr'): ?>
-        <h3>Schedule Evaluations</h3>
+        <div class="sched-eval-container">
+            <h3>Schedule Evaluations</h3>
         <!-- Button to open the modal -->
         <button type="button" id="openScheduleModal" style="margin-bottom: 16px;">Schedule New Evaluation</button>
+        </div>
+        
 
         <!-- Modal structure -->
         <div id="scheduleModal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3);">
@@ -222,17 +225,61 @@ if ($activeRole === 'hr') {
         </table>
     <?php endif; ?>
 
-    <?php if ($activeRole === 'employee' && !empty($selfEvals)): ?>
+   <?php if ($activeRole === 'employee' && !empty($selfEvals)): ?>
         <h3>Pending Self-Evaluations</h3>
         <?php foreach ($selfEvals as $eval): ?>
-            <form method="POST">
+            <form method="POST" class="evaluation-form">
                 <input type="hidden" name="eval_id" value="<?= $eval['id']; ?>">
-                <label>Quality of Work:</label><input type="number" name="quality_of_work" required>
-                <label>Productivity:</label><input type="number" name="productivity" required>
-                <label>Attendance:</label><input type="number" name="attendance" required>
-                <label>Teamwork:</label><input type="number" name="teamwork" required>
-                <label>Comments:</label><textarea name="comments"></textarea>
-                <button type="submit" name="submit_evaluation">Submit</button>
+                
+                <div class="rating-criterion">
+                    <label>Quality of Work:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="quality_<?= $eval['id'] ?>_<?= $i ?>" name="quality_of_work" value="<?= $i ?>" required>
+                            <label for="quality_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Productivity:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="productivity_<?= $eval['id'] ?>_<?= $i ?>" name="productivity" value="<?= $i ?>" required>
+                            <label for="productivity_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Attendance:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="attendance_<?= $eval['id'] ?>_<?= $i ?>" name="attendance" value="<?= $i ?>" required>
+                            <label for="attendance_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Teamwork:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="teamwork_<?= $eval['id'] ?>_<?= $i ?>" name="teamwork" value="<?= $i ?>" required>
+                            <label for="teamwork_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <label>Comments:</label>
+                    <textarea name="comments" rows="4"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" name="submit_evaluation" class="submit-btn">Submit Evaluation</button>
+                    <a href="/index.php" class="cancel-link">Cancel</a>
+                </div>
             </form>
         <?php endforeach; ?>
     <?php endif; ?>
@@ -240,15 +287,63 @@ if ($activeRole === 'hr') {
     <?php if ($activeRole === 'manager' && !empty($pendingSupervisorEvals)): ?>
         <h3>Evaluate Employees</h3>
         <?php foreach ($pendingSupervisorEvals as $eval): ?>
-            <form method="POST">
-                <p>Evaluating: <?= htmlspecialchars($eval['first_name'] . ' ' . $eval['last_name']); ?> (<?= $eval['scheduled_date']; ?>)</p>
+            <form method="POST" class="evaluation-form">
+                <div class="evaluatee-info">
+                    Evaluating: <strong><?= htmlspecialchars($eval['first_name'] . ' ' . $eval['last_name']); ?></strong>
+                    (Due: <?= $eval['scheduled_date']; ?>)
+                </div>
+                
                 <input type="hidden" name="eval_id" value="<?= $eval['id']; ?>">
-                <label>Quality of Work:</label><input type="number" name="quality_of_work" required>
-                <label>Productivity:</label><input type="number" name="productivity" required>
-                <label>Attendance:</label><input type="number" name="attendance" required>
-                <label>Teamwork:</label><input type="number" name="teamwork" required>
-                <label>Comments:</label><textarea name="comments"></textarea>
-                <button type="submit" name="submit_evaluation">Submit</button>
+                
+                               <div class="rating-criterion">
+                    <label>Quality of Work:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="quality_<?= $eval['id'] ?>_<?= $i ?>" name="quality_of_work" value="<?= $i ?>" required>
+                            <label for="quality_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Productivity:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="productivity_<?= $eval['id'] ?>_<?= $i ?>" name="productivity" value="<?= $i ?>" required>
+                            <label for="productivity_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Attendance:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="attendance_<?= $eval['id'] ?>_<?= $i ?>" name="attendance" value="<?= $i ?>" required>
+                            <label for="attendance_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="rating-criterion">
+                    <label>Teamwork:</label>
+                    <div class="star-rating">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                            <input type="radio" id="teamwork_<?= $eval['id'] ?>_<?= $i ?>" name="teamwork" value="<?= $i ?>" required>
+                            <label for="teamwork_<?= $eval['id'] ?>_<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <div class="comments-section">
+                    <label>Comments:</label>
+                    <textarea name="comments" rows="4"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" name="submit_evaluation" class="submit-btn">Submit Evaluation</button>
+                    <a href="/index.php" class="cancel-link">Cancel</a>
+                </div>
             </form>
         <?php endforeach; ?>
     <?php endif; ?>

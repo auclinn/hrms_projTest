@@ -19,7 +19,7 @@
         window.onload = updateClock;
     </script>
 </head>
-<body>
+<body  data-role="<?php echo isLoggedIn() ? ($_SESSION['active_role'] ?? 'employee') : 'guest'; ?>">
     <header>
         <div class="header-container">
             <figure class="logo-container">
