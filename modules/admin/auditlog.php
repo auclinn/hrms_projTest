@@ -32,7 +32,14 @@ if ($filter === 'today') {
 
 // Pagination setup
 $perPage = 15;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$countSql = "SELECT COUNT(*) FROM auditlogs $where";
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute($params);
+$totalRows = $countStmt->fetchColumn();
+$totalPages = ceil($totalRows / $perPage);
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
+if ($page < 1) $page = 1;
+if ($page > $totalPages && $totalPages > 0) $page = $totalPages;
 $offset = ($page - 1) * $perPage;
 
 // Count total rows
@@ -98,13 +105,13 @@ $logs = $stmt->fetchAll();
 
     <!-- Log Table -->
     <div style="max-height:50vh; overflow-y:auto;">
-        <table style="border-collapse:collapse; width:100%;">
-            <thead style="position:sticky; top:0; background:#fff; z-index:1;">
+        <table style="width:100%;">
+            <thead style="position:sticky; top:0; z-index:1;">
             <tr>
-                <th style="position:sticky; top:0; background:#fff; z-index:2;">Timestamp</th>
-                <th style="position:sticky; top:0; background:#fff; z-index:2;">Username</th>
-                <th style="position:sticky; top:0; background:#fff; z-index:2;">Action</th>
-                <th style="position:sticky; top:0; background:#fff; z-index:2;">Details</th>
+                <th style="position:sticky; top:0; z-index:2;">Timestamp</th>
+                <th style="position:sticky; top:0; z-index:2;">Username</th>
+                <th style="position:sticky; top:0; z-index:2;">Action</th>
+                <th style="position:sticky; top:0; z-index:2;">Details</th>
             </tr>
             </thead>
             <tbody>
@@ -121,21 +128,26 @@ $logs = $stmt->fetchAll();
     </div>
 
     <!-- Pagination -->
-    <div class="pagination">
-        <?php if ($page > 1): ?>
-            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">&laquo; Prev</a>
-        <?php endif; ?>
-
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <?php if ($i == $page): ?>
-                <strong><?= $i ?></strong>
-            <?php else: ?>
-                <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"><?= $i ?></a>
+    <div class="pagination" style="margin:15px 0;">
+        <?php if ($totalPages > 1): ?>
+            <?php if ($page > 1): ?>
+                <a href="?<?= http_build_query(array_merge($_GET, ['page' => 1])) ?>">&laquo; First</a>
+                <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">&lt; Prev</a>
             <?php endif; ?>
-        <?php endfor; ?>
-
-        <?php if ($page < $totalPages): ?>
-            <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">Next &raquo;</a>
+            <?php
+            $startPage = max(1, $page - 2);
+            $endPage = min($totalPages, $page + 2);
+            for ($i = $startPage; $i <= $endPage; $i++): ?>
+                <?php if ($i == $page): ?>
+                    <span style="font-weight:bold;"><?php echo $i; ?></span>
+                <?php else: ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"><?php echo $i; ?></a>
+                <?php endif; ?>
+            <?php endfor; ?>
+            <?php if ($page < $totalPages): ?>
+                <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">Next &gt;</a>
+                <a href="?<?= http_build_query(array_merge($_GET, ['page' => $totalPages])) ?>">Last &raquo;</a>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>

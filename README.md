@@ -11,11 +11,11 @@
 ---
 ## For this project, you need:
 
-*On Local machine*  | *On WSL*
-------------------- | -------------
-xampp, phpMyAdmin   | php (ver 8.3.6 or higher)
-vscode              | mysql
-
+***On Local machine***  | ***On WSL***
+:---: | :---:
+xampp, phpMyAdmin       | php (ver 8.3.6 or higher)
+vscode | vscode (with WSL extension)                   
+git bash                | mysql
 
 
 ## To clone this project 
@@ -26,6 +26,9 @@ vscode              | mysql
 
 *On WSL:*
 - clone the repository on your prefered directory
+
+## **If downloaded as zip file*
+- extract the file and move into ```htdocs``` folder
 
 ## To create the database 
 *On local machine (xampp/phpmyAdmin):*

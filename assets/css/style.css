@@ -165,7 +165,7 @@ table {
 
 table th,
 table td {
-    padding: 10px;
+    padding: 5px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -181,6 +181,7 @@ table tr:hover {
 
 /* Messages */
 .success {
+    position: relative;
     background-color: #d4edda;
     color: #155724;
     padding: 10px;
@@ -190,12 +191,29 @@ table tr:hover {
 }
 
 .error {
+    position: relative;
     background-color: #f8d7da;
     color: #721c24;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 15px;
     border: 1px solid #f5c6cb;
+}
+
+.close-message {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: inherit;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.close-message:hover {
+    opacity: 1;
 }
 
 /* Stats */
@@ -337,8 +355,39 @@ color: transparent;
     /* some other future styling hereeee */
 
 /* ---------- Employee mgt specific styling */
-    /* here din */
+.add-emp-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
 
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-filter form {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+.search-filter form input[type="text"] {
+    width: 100%;
+}
+.search-filter label {
+    margin: 0;
+    width: 100%;
+    text-align: end;
+}
+
+.search-filter input[type="date"] {
+    width: 50%;
+}
 /* ---------- Attendance specific styling */
 .attendance-clocking {
     display: flex;
