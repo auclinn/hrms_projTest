@@ -360,7 +360,6 @@ color: transparent;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 0;
 }
 
 .search-filter {
@@ -372,17 +371,20 @@ color: transparent;
 
 .search-filter form {
     display: flex;
+    /* flex-wrap: wrap; */
     justify-content: flex-end;
     align-items: center;
     gap: 1rem;
 }
 .search-filter form input[type="text"] {
     width: 100%;
+    min-width: 20rem;
 }
 .search-filter label {
     margin: 0;
-    width: 100%;
-    text-align: end;
+    width: 60%;
+    text-align: center;
+    /* border: 5px red solid; */
 }
 
 .search-filter input[type="date"] {
@@ -414,6 +416,13 @@ color: transparent;
 
 .attendance-list-filter label {
     margin: 0;
+}
+
+.attendance-correction-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
 /* ---------- audit log styling */
 .auditfilter-container{

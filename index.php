@@ -70,19 +70,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     } elseif ($_POST['action'] === 'time_out') {
         try {
-            $stmt = $pdo->prepare("UPDATE attendance SET time_out = NOW() 
-                WHERE employee_id = ? AND date = ? AND time_out IS NULL");
-            $stmt->execute([$employeeId, $today]);
+        $stmt = $pdo->prepare("SELECT * FROM attendance WHERE employee_id = ? AND date = ?");
+        $stmt->execute([$employeeId, $today]);
+        $existing = $stmt->fetch();
 
-            if ($stmt->rowCount() > 0) {
-                $success = "Time out recorded successfully!";
-                logAction($pdo, 'time_out', "Employee timed out.");
-            } else {
-                $error = "You haven't timed in yet or already timed out.";
-            }
-        } catch (PDOException $e) {
-            $error = "Error recording time out: " . $e->getMessage();
+        if (!$existing) {
+            // Insert with NULL time_in
+            $status = 'present'; // or maybe 'needs_review' if you want to flag it
+            $stmt = $pdo->prepare("INSERT INTO attendance (employee_id, date, time_in, time_out, status) 
+                VALUES (?, ?, NULL, NOW(), ?)");
+            $stmt->execute([$employeeId, $today, $status]);
+            $success = "Time out recorded, but no time-in was found.";
+        } elseif (!$existing['time_out']) {
+            $stmt = $pdo->prepare("UPDATE attendance SET time_out = NOW() 
+                WHERE employee_id = ? AND date = ?");
+            $stmt->execute([$employeeId, $today]);
+            $success = "Time out recorded successfully!";
+        } else {
+            $error = "You already timed out today.";
         }
+
+        logAction($pdo, 'time_out', "Employee timed out.");
+    } catch (PDOException $e) {
+        $error = "Error recording time out: " . $e->getMessage();
+    }
     }
 }
 
@@ -92,6 +103,25 @@ $stmt = $pdo->prepare("SELECT * FROM attendance
     ORDER BY date DESC");
 $stmt->execute([$employeeId]);
 $attendanceRecords = $stmt->fetchAll();
+
+// Determine whether employee can time in or out
+$now = new DateTime();
+$noon = new DateTime('12:00:00');
+$workStart = new DateTime('08:00:00');
+$workEnd = new DateTime('17:00:00');
+
+// // Check if today is a weekday (Monday = 1, Sunday = 7)
+// $isWeekday = in_array($now->format('N'), [1, 2, 3, 4, 5]);
+// $canClock = $now >= $workStart && $now <= $workEnd && $isWeekday;
+
+// Check if it's after 12 PM and no time_in yet
+$autoTimeOutOnly = false;
+if ($canClock && !$todayRecord && $now >= $noon) {
+    // Simulate record with NULL time_in and allow only time_out
+    $todayRecord = ['time_in' => null, 'time_out' => null, 'date' => date('Y-m-d')];
+    $autoTimeOutOnly = true;
+}
+
 
 // check if theres attendance today na
 $todayRecord = null;
@@ -160,16 +190,21 @@ foreach ($attendanceRecords as $record) {
             <?php endif; ?>
 
             <div class="attendance-actions">
-                <form method="POST" action="index.php">
-                    <?php if (!$todayRecord): ?>
-                        <button type="submit" name="action" value="time_in">Time In</button>
-                    <?php elseif (!$todayRecord['time_out']): ?>
-                        <button type="submit" name="action" value="time_out">Time Out</button>
-                    <?php else: ?>
-                        <p>You've completed your attendance for today.</p>
-                    <?php endif; ?>
-                </form>
+                    <form method="POST" action="index.php">
+                        <?php if (!$todayRecord): ?>
+                            <button type="submit" name="action" value="time_in">Time In</button>
+                        <?php elseif (!$todayRecord['time_in'] && !$todayRecord['time_out'] && $autoTimeOutOnly): ?>
+                            <p>No time-in detected this morning.</p>
+                            <button type="submit" name="action" value="time_out">Time Out</button>
+                        <?php elseif ($todayRecord['time_in'] && !$todayRecord['time_out']): ?>
+                            <button type="submit" name="action" value="time_out">Time Out</button>
+                        <?php else: ?>
+                            <p>You've completed your attendance for today.</p>
+                        <?php endif; ?>
+                    </form>
             </div>
+
+            
         </div>
 
         <div class="stats">

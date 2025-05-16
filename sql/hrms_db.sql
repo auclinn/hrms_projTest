@@ -64,6 +64,24 @@ CREATE TABLE auditlogs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
 );
+
+-- attendance correction table
+CREATE TABLE attendance_corrections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    attendance_id INT NOT NULL,
+    employee_id INT NOT NULL,
+    correction_type ENUM('time_in', 'time_out') NOT NULL,
+    corrected_time TIME NOT NULL,
+    reason TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    reviewed_by INT DEFAULT NULL,
+    reviewed_at DATETIME DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (attendance_id) REFERENCES attendance(id),
+    FOREIGN KEY (employee_id) REFERENCES employees(id),
+    FOREIGN KEY (reviewed_by) REFERENCES users(id)
+);
+
 ---------------------------------------------------
 ---------------------------------------------------
 -- !! do not run these yetttttt, make hashed passwords muna
