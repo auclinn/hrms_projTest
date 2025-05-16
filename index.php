@@ -138,21 +138,48 @@ foreach ($attendanceRecords as $record) {
     <h2>Dashboard</h2>
     
     <?php if ($activeRole === 'admin'): ?>
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Audit Log</h3>
-                <p><?php echo $totalEmployees; ?></p>
-            </div>
-            <div class="stat-card">
-                <h3>Important stuff</h3>
-                <p><?php echo $presentToday; ?></p>
-            </div>
-            <div class="stat-card">
-                <h3>Other stuff</h3>
-                <p><?php echo $pendingLeaves; ?></p>
-            </div>
-            <!-- Add more admin-specific stats here if needed -->
+    <div class="stats">
+        <div class="stat-card" id ="total-employees">
+            <h3>Total Number of Employees</h3>
+            <p><?php echo $totalEmployees; ?></p>
         </div>
+        <div class="stat-card" id ="recent-activity">
+            <h3>Recent Activity</h3>
+                <table class="mini-audit-table" style="width:100%; font-size:0.95em;">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Action</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    try {
+                        $stmt = $pdo->query("SELECT created_at, action, details FROM auditlogs ORDER BY created_at DESC LIMIT 3");
+                        $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        if ($logs) {
+                            foreach ($logs as $log) {
+                                echo '<tr>';
+                                echo '<td>' . htmlspecialchars($log['created_at']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['action']) . '</td>';
+                                echo '<td>' . htmlspecialchars($log['details']) . '</td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="3">No recent activity.</td></tr>';
+                        }
+                    } catch (Exception $e) {
+                        echo '<tr><td colspan="3">Error loading activity.</td></tr>';
+                    }
+                    ?>
+                    </tbody>
+                </table>
+                <a href="modules/admin/auditlog.php">View All Audit Logs</a>
+            </div>
+            
+        </div>
+        
     <?php elseif ($activeRole === 'hr'): ?>
         <div class="stats">
             <div class="stat-card">
@@ -163,7 +190,6 @@ foreach ($attendanceRecords as $record) {
                 <h3>Pending Leaves</h3>
                 <p><?php echo $pendingLeaves; ?></p>
             </div>
-            <!-- Add more HR-specific stats here if needed -->
         </div>
 
     <?php elseif ($activeRole === 'manager'): ?>
@@ -176,7 +202,28 @@ foreach ($attendanceRecords as $record) {
                 <h3>Pending Leaves</h3>
                 <p><?php echo $pendingLeaves; ?></p>
             </div>
-            <!-- Add more HR-specific stats here if needed -->
+            <div class="stat-card">
+                <h3>Notifications</h3>
+                <?php
+                try {
+                    $stmt = $pdo->prepare("SELECT COUNT(*) as pending_evals FROM evaluations WHERE evaluator_id = ? AND status = 'pending'");
+                    $stmt->execute([$_SESSION['user_id']]);
+                    $pendingEvals = $stmt->fetchColumn();
+                } catch (Exception $e) {
+                    $pendingEvals = 0;
+                }
+                ?>
+                <?php if ($pendingEvals > 0): ?>
+                    <div class="notification success">
+                        You have <?php echo $pendingEvals; ?> pending evaluation<?php echo $pendingEvals == 1 ? '' : 's'; ?>.
+                        <a href="modules/manager/evaluation.php">View Evaluations</a>
+                    </div>
+                <?php else: ?>
+                    <div class="notification">
+                        All clear.
+                    </div>
+                <?php endif; ?>
+                </div>
         </div>
     <?php else: ?>
         <div class="attendance-clocking">
@@ -203,8 +250,6 @@ foreach ($attendanceRecords as $record) {
                         <?php endif; ?>
                     </form>
             </div>
-
-            
         </div>
 
         <div class="stats">
@@ -214,11 +259,35 @@ foreach ($attendanceRecords as $record) {
                 <p>Absent: <?php echo $attendanceSummary['absent']; ?></p>
                 <p>Late: <?php echo $attendanceSummary['late']; ?></p>
             </div>
+
             <div class="stat-card">
                 <h3>Leave Requests</h3>
                 <p>Approved: <?php echo $leaveSummary['approved']; ?></p>
                 <p>Rejected: <?php echo $leaveSummary['rejected']; ?></p>
                 <p>Pending: <?php echo $leaveSummary['pending']; ?></p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Notifications</h3>
+                <?php
+                try {
+                    $stmt = $pdo->prepare("SELECT COUNT(*) as pending_evals FROM evaluations WHERE employee_id = ? AND status = 'pending' AND evaluation_type = 'self'");
+                    $stmt->execute([$employeeId]);
+                    $pendingEvals = $stmt->fetchColumn();
+                } catch (Exception $e) {
+                    $pendingEvals = 0;
+                }
+                ?>
+                <?php if ($pendingEvals > 0): ?>
+                    <div class="notification success">
+                        You have <?php echo $pendingEvals; ?> pending evaluation<?php echo $pendingEvals == 1 ? '' : 's'; ?>.
+                        <a href="modules/manager/evaluation.php">View Evaluations</a>
+                    </div>
+                <?php else: ?>
+                    <div class="notification">
+                        All clear.
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>

@@ -29,6 +29,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+  // Handle image upload
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+        $tmpName = $_FILES['profile_pic']['tmp_name'];
+        $mime = mime_content_type($tmpName);
+        $allowed = ['image/jpeg', 'image/png', 'image/gif'];
+        if (in_array($mime, $allowed)) {
+            // Always save as jpg for consistency
+            $dest = $imgDir . "profile_$employeeId.jpg";
+            if ($mime === 'image/png') {
+                $image = imagecreatefrompng($tmpName);
+                imagejpeg($image, $dest, 90);
+                imagedestroy($image);
+            } elseif ($mime === 'image/gif') {
+                $image = imagecreatefromgif($tmpName);
+                imagejpeg($image, $dest, 90);
+                imagedestroy($image);
+            } else {
+                move_uploaded_file($tmpName, $dest);
+            }
+            $imgExists = true;
+            $success = ($success ?? '') . " Profile picture updated!";
+        } else {
+            $error = ($error ?? '') . " Invalid image type. Only JPG, PNG, GIF allowed.";
+        }
+    }
+
 // get employee detailss
 $employee = getEmployeeDetails($employeeId);
 ?>
@@ -44,6 +70,7 @@ $employee = getEmployeeDetails($employeeId);
     <?php endif; ?>
     
     <form method="POST" action="profile.php">
+        
         <div>
             <label for="first_name">First Name:</label>
             <input type="text" id="first_name" name="first_name" value="<?php echo $employee['first_name']; ?>" required>

@@ -49,9 +49,12 @@ $leaveRequests = $stmt->fetchAll();
         <?php if (isset($error)): ?>
             <div class="error"><?php echo $error; ?></div>
         <?php endif; ?>
-        <h2>My Leave Requests</h2>
+        <div class="leave-req-container">
+            <h2>My Leave Requests</h2>
         <button id="openLeaveModal" type="button">Create new leave request</button>
 
+        </div>
+        
         <!-- Leave Request Modal -->
         <div id="leaveModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
             <div class="modal-content" style="background:#fff; margin:10% auto; padding:20px; border:1px solid #888; width:400px; position:relative;">
@@ -185,11 +188,15 @@ $leaveRequests = $stmt->fetchAll();
                         <td><?php echo $req['created_at']; ?></td>
                         <td>
                             <?php if ($req['status'] === 'pending'): ?>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="leave_id" value="<?php echo $req['id']; ?>">
-                                    <button type="submit" name="action" value="approve">Approve</button>
-                                    <button type="submit" name="action" value="reject">Reject</button>
-                                </form>
+                                <?php if ($activeRole === 'manager'): ?>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="leave_id" value="<?php echo $req['id']; ?>">
+                                        <button type="submit" name="action" value="approve">Approve</button>
+                                        <button type="submit" name="action" value="reject">Reject</button>
+                                    </form>
+                                <?php else: ?>
+                                    --
+                                <?php endif; ?>
                             <?php else: ?>
                                 --
                             <?php endif; ?>

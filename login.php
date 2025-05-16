@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
     <form method="POST" action="login.php">
         <div class="form-floating-label">
-            <input type="text" class="form-control" placeholder="Username" id="username" name="username" required>
+            <input type="text" class="form-control" placeholder="" id="username" name="username" required>
             <label for="username">Username</label>
         </div>
         <div class="form-floating-label">
-            <input type="password" class="form-control" placeholder="Password" id="password" name="password" required>
+            <input type="password" class="form-control" placeholder="" id="password" name="password" required>
             <label for="password">Password</label>        
         </div>
         <div class="login-btn-container">

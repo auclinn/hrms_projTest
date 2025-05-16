@@ -138,28 +138,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['review_correction']) 
     
     <?php if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager'): ?>
         <hr>
-        <h2>All Employees' Attendance (Current Month)</h2>
+        <h2>Employees' Attendance</h2>
 
-        
         <form method="GET" action="attendance.php" style="margin-bottom: 1rem;" class="attendance-list-filter">
-            <label for="filterDate">Filter by date:</label>
-            <input type="date" name="filterDate" id="filterDate" value="<?php echo htmlspecialchars($_GET['filterDate'] ?? date('Y-m-d')); ?>">
+            <label for="filterStartDate">From:</label>
+            <input type="date" name="filterStartDate" id="filterStartDate" value="<?php echo htmlspecialchars($_GET['filterStartDate'] ?? ''); ?>">
+            <label for="filterEndDate" style="margin-left:10px;">To:</label>
+            <input type="date" name="filterEndDate" id="filterEndDate" value="<?php echo htmlspecialchars($_GET['filterEndDate'] ?? ''); ?>">
             <button type="submit">Filter</button>
+            <?php if (!empty($_GET['filterStartDate']) || !empty($_GET['filterEndDate'])): ?>
+                <a href="attendance.php" style="margin-left:10px; color:#d9534f;">Reset</a>
+            <?php endif; ?>
         </form>
-        
 
         <?php
-        $filterDate = $_GET['filterDate'] ?? null;
+        $filterStartDate = $_GET['filterStartDate'] ?? null;
+        $filterEndDate = $_GET['filterEndDate'] ?? null;
         $query = "SELECT a.date, a.time_in, a.time_out, a.status, CONCAT(e.first_name, ' ', e.last_name) AS name
                 FROM attendance a 
                 JOIN employees e ON a.employee_id = e.id";
 
-        if ($filterDate) {
-            $query .= " WHERE a.date = ?";
+        $params = [];
+        $whereClauses = [];
+
+        if ($filterStartDate) {
+            $whereClauses[] = "a.date >= ?";
+            $params[] = $filterStartDate;
+        }
+        if ($filterEndDate) {
+            $whereClauses[] = "a.date <= ?";
+            $params[] = $filterEndDate;
+        }
+
+        if (!empty($whereClauses)) {
+            $query .= " WHERE " . implode(' AND ', $whereClauses) . " ORDER BY a.date DESC";
             $stmt = $pdo->prepare($query);
-            $stmt->execute([$filterDate]);
+            $stmt->execute($params);
         } else {
-            $query .= " WHERE MONTH(a.date) = MONTH(CURRENT_DATE())";
+            $query .= " WHERE MONTH(a.date) = MONTH(CURRENT_DATE()) ORDER BY a.date DESC";
             $stmt = $pdo->query($query);
         }
 

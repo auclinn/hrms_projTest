@@ -1,5 +1,6 @@
 CREATE DATABASE hrms_db;
-
+use hrms_db;
+----------------------
 -- Users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -81,6 +82,27 @@ CREATE TABLE attendance_corrections (
     FOREIGN KEY (employee_id) REFERENCES employees(id),
     FOREIGN KEY (reviewed_by) REFERENCES users(id)
 );
+
+-- eval table
+CREATE TABLE evaluations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    evaluator_id INT NOT NULL,
+    scheduled_date DATE NOT NULL,
+    period ENUM('quarterly', 'bi-annually', 'annually') NOT NULL,
+    evaluation_type ENUM('self', 'supervisor') NOT NULL,
+    quality_of_work INT,
+    productivity INT,
+    attendance INT,
+    teamwork INT,
+    total_score DECIMAL(5,2),
+    comments TEXT,
+    status ENUM('pending', 'submitted', 'approved') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employees(id),
+    FOREIGN KEY (evaluator_id) REFERENCES users(id)
+);
+
 
 ---------------------------------------------------
 ---------------------------------------------------

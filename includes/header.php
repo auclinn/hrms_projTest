@@ -35,16 +35,20 @@
                     <span>
                          |
                     </span>
-                    <a href="/index.php">Dashboard</a>
+                    <a href="/index.php">Home</a>
 
                     <?php if (($_SESSION['active_role'] ?? 'employee') === 'employee'): ?>
                         <!-- Employee View Links -->
                         <a href="/modules/employee/profile.php">Profile</a>
                         <a href="/modules/employee/attendance.php">Attendance</a>
+                        <a href="/modules/employee/leave.php">Leave Requests</a>
                     <?php else: ?>
                         <!-- HR/Manager/Admin View Links -->
                         <?php if (in_array($_SESSION['active_role'], ['hr', 'admin'])): ?>
                             <a href="/modules/hr/employees.php">Employees</a>
+                        <?php endif; ?>
+                        <?php if (in_array($_SESSION['active_role'], ['hr'])): ?>
+                            <a href="/modules/manager/evaluation.php">Evaluations</a>
                         <?php endif; ?>
                         <?php if (in_array($_SESSION['active_role'], ['hr', 'manager'])): ?>
                             <a href="/modules/employee/leave.php">Leave Requests</a>
@@ -70,8 +74,8 @@
                             </a>
 
                         <?php endif;
-                    endif;
-                    ?>
+                    endif;?>
+                    
                     <?php endif; ?>
                     <?php if (isLoggedIn()): ?>
                         <a href="#" id="logout-link">Logout</a>
