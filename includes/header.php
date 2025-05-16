@@ -41,17 +41,18 @@
                         <!-- Employee View Links -->
                         <a href="/modules/employee/profile.php">Profile</a>
                         <a href="/modules/employee/attendance.php">Attendance</a>
-                        <a href="/modules/employee/leave.php">Leave Request</a>
                     <?php else: ?>
                         <!-- HR/Manager/Admin View Links -->
                         <?php if (in_array($_SESSION['active_role'], ['hr', 'admin'])): ?>
                             <a href="/modules/hr/employees.php">Employees</a>
                         <?php endif; ?>
+                        <?php if (in_array($_SESSION['active_role'], ['hr', 'manager'])): ?>
+                            <a href="/modules/employee/leave.php">Leave Requests</a>
+                        <?php endif; ?>
                         <?php if (($_SESSION['active_role'] ?? '') === 'admin'): ?>
                             <a href="/modules/admin/auditlog.php">Audit Log</a>
                         <?php endif; ?>
                         <a href="/modules/employee/attendance.php">Attendance</a>
-                        <a href="/modules/employee/leave.php">Leave Requests</a>
                     <?php endif; ?>
 
                     <!-- Role Switching -->
@@ -72,7 +73,28 @@
                     endif;
                     ?>
                     <?php endif; ?>
-                    <a href="/logout.php">Logout</a>
+                    <?php if (isLoggedIn()): ?>
+                        <a href="#" id="logout-link">Logout</a>
+                        <div id="logout-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:1000;">
+                            <div style="background:#fff; color: black; padding:2em; border-radius:8px; max-width:300px; margin:15% auto; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.2);">
+                                <p>Are you sure you want to log out?</p>
+                                <button id="confirm-logout" style="margin-right:1em;">Yes</button>
+                                <button id="cancel-logout">No</button>
+                            </div>
+                        </div>
+                        <script>
+                            document.getElementById('logout-link').onclick = function(e) {
+                                e.preventDefault();
+                                document.getElementById('logout-modal').style.display = 'block';
+                            };
+                            document.getElementById('cancel-logout').onclick = function() {
+                                document.getElementById('logout-modal').style.display = 'none';
+                            };
+                            document.getElementById('confirm-logout').onclick = function() {
+                                window.location.href = '/logout.php';
+                            };
+                        </script>
+                    <?php endif; ?>
             </nav>
 
             <div class="curr-time-container">

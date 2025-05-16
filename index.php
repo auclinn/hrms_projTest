@@ -7,25 +7,26 @@ require_once 'includes/functions.php';
 requireLogin();
 $activeRole = $_SESSION['active_role'] ?? 'employee';
 
+if ($activeRole === 'employee') {
+    $employeeId = getEmployeeId();
+}
+
+
+
 // Get stats based on role
-if (hasRole('admin') || hasRole('hr') || hasRole('manager')) {
-    // Get total employees
+if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager') {
+    // Admin/HR/Manager stats
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM employees");
     $totalEmployees = $stmt->fetch()['total'];
-    
-    // Get today's attendance
+
     $stmt = $pdo->prepare("SELECT COUNT(*) as present FROM attendance WHERE date = ? AND status = 'present'");
     $stmt->execute([date('Y-m-d')]);
     $presentToday = $stmt->fetch()['present'];
-    
-    // Pending leave requests
+
     $stmt = $pdo->query("SELECT COUNT(*) as pending FROM leave_requests WHERE status = 'pending'");
     $pendingLeaves = $stmt->fetch()['pending'];
 } else {
-    // Employee stats
-    $employeeId = getEmployeeId();
-    
-    // Get attendance summary
+    // Employee-specific stats
     $stmt = $pdo->prepare("SELECT 
         COUNT(CASE WHEN status = 'present' THEN 1 END) as present,
         COUNT(CASE WHEN status = 'absent' THEN 1 END) as absent,
@@ -34,8 +35,7 @@ if (hasRole('admin') || hasRole('hr') || hasRole('manager')) {
         FROM attendance WHERE employee_id = ? AND MONTH(date) = MONTH(CURRENT_DATE())");
     $stmt->execute([$employeeId]);
     $attendanceSummary = $stmt->fetch();
-    
-    // Get leave requests status
+
     $stmt = $pdo->prepare("SELECT 
         COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
         COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected,
@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     VALUES (?, ?, NOW(), ?)");
                 $stmt->execute([$employeeId, $today, $status]);
                 $success = "Time in recorded successfully!";
+                logAction($pdo, 'time_in', "Employee timed in.");
             } else {
                 $error = "You have already timed in today.";
             }
@@ -75,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             if ($stmt->rowCount() > 0) {
                 $success = "Time out recorded successfully!";
+                logAction($pdo, 'time_out', "Employee timed out.");
             } else {
                 $error = "You haven't timed in yet or already timed out.";
             }
