@@ -19,14 +19,27 @@ vscode              | mysql
 
 
 ## To clone this project 
+*On local machine:*
 - go to your local xampp folder and find ```htdocs``` folder
 - right click, then ```Open Git Bash here```
 - inside git bash, run: ```git clone https://github.com/auclinn/hrms_projTest.git```
 
-## To create the database (mysql/phpmyadmin)
+*On WSL:*
+- clone the repository on your prefered directory
+
+## To create the database 
+*On local machine (xampp/phpmyAdmin):*
 - go to ```config.php``` and change ```DB_PORT``` to ```3306```
+- in the same file, configure ```DB_USER``` and ```DB_PASS``` to your own credentials
 - copy and run the database and table creation from ```hrms_db.sql``` to SQL in phpMyAdmin
 - for the insertion of users, follow instructions from the same file
+
+*On WSL (mysql):*
+- configure credentials in ```config.php``` similar to local machine instructions
+- in WSL, open mysql using your credentials
+- copy and run db creation from ```hrms_db.sql``` in mysql
+- *optional:* query showing of all tables to check if creations were successful
+- same instructions for user insertion as above in local machine instructions 
 
 ## To run the project
 - open the project in VSCode, have the terminal open (like bash)
@@ -34,5 +47,5 @@ vscode              | mysql
 - if that results in a command not found error, run this instead:  ```"C:/xampp/php/php.exe" -S localhost:8000```
 
 ---
-## Library
+## Library used
 - [PHPMailer](https://github.com/PHPMailer/PHPMailer) 
