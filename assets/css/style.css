@@ -773,12 +773,6 @@ table tr:hover {
     border-bottom: 2px solid #e0e7ff;
 }
 
-.profile-container form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
 .profile-container form > div {
     margin-bottom: 0;
 }
@@ -819,7 +813,7 @@ table tr:hover {
     resize: vertical;
 }
 
-.profile-container button[type="submit"] {
+.profile-container button[type="submit"], #profile_pic{
     grid-column: 1 / -1;
     background: linear-gradient(90deg, #2c3e50, #255586, #22313f);
     background-size: 200%;
@@ -848,6 +842,57 @@ table tr:hover {
     color: #4b5563;
     font-weight: 500;
 }
+
+/* Profile picture section */
+.profile-picture-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    grid-column: 1 / -1;
+}
+
+.profile-picture-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 3px solid #1a2859;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-picture-upload {
+    text-align: center;
+}
+
+.profile-picture-upload label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.profile-picture-upload small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.profile-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
 /* ---------- Employee mgt specific styling */
 .employee-mgt-container {
     width: 95%;

@@ -25,6 +25,7 @@ CREATE TABLE employees (
     department VARCHAR(50) NOT NULL,
     position VARCHAR(50) NOT NULL,
     hire_date DATE NOT NULL,
+    profile_image VARCHAR(255) NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
