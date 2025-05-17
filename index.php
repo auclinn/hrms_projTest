@@ -168,20 +168,47 @@ foreach ($attendanceRecords as $record) {
     <h2><?php echo "$greeting, $userName"; ?></h2>
     
     <?php if ($activeRole === 'admin'): ?>
-        <div class="stats">
+        <div class="stats" id="employee-stats">
             <div class="stat-card" id ="total-employees">
                 <h3>Employee Statistics</h3>
-                    
-                        <h4>Total Employees: <?php echo $totalEmployees; ?></h4>
-                    
-                        <h4>Average Tenure: <?php echo number_format($avgTenure, 1); ?> years</h4>
-                    
-                        <h4>Role Distribution</h4>
-                        <ul class="distribution-list">
-                            <?php foreach ($roleDistribution as $role => $count): ?>
-                                <li><?php echo ucfirst($role) . ": " . $count; ?></li>
-                            <?php endforeach; ?>
-                        </ul>       
+                 <div class="employee-stats-grid">
+                <div class="stat-item">
+                    <h4>Total Employees</h4>
+                    <p class="stat-number"><?php echo $totalEmployees; ?></p>
+                </div>
+                <div class="stat-item">
+                    <h4>Average Tenure</h4>
+                    <p class="stat-number"><?php echo number_format($avgTenure, 1); ?> years</p>
+                </div>
+                
+                <div class="stat-item" id="stat-flex">
+                    <h4>Role Distribution</h4>
+                    <ul class="distribution-list">
+                        <?php foreach ($roleDistribution as $role => $count): ?>
+                            <li><?php echo ucfirst($role) . ": " . $count; ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                
+                <div class="stat-item" id="stat-flex">
+                    <h4>Gender Distribution</h4>
+                    <ul class="distribution-list">
+                        <?php foreach ($genderDistribution as $gender => $count): ?>
+                            <li><?php echo ucfirst($gender) . ": " . $count; ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                
+                <div class="stat-item" id="stat-flex">
+                    <h4>Departments</h4>
+                    <ul class="distribution-list">
+                        <?php foreach ($departmentDistribution as $dept => $count): ?>
+                            <li><?php echo $dept . ": " . $count; ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+ 
             </div>
             <div class="stat-card" id ="recent-activity">
                 <h3>Recent Activity</h3>
@@ -218,17 +245,80 @@ foreach ($attendanceRecords as $record) {
                     <a href="modules/admin/auditlog.php">View All Audit Logs</a>
             </div>
         </div>
-    <?php elseif ($activeRole === 'hr'): ?>
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total Employees</h3>
-                <p><?php echo $totalEmployees; ?></p>
-            </div>
-            <div class="stat-card">
-                <h3>Pending Leaves</h3>
-                <p><?php echo $pendingLeaves; ?></p>
-            </div>
+<?php elseif ($activeRole === 'hr'): ?>
+    <?php
+    // Get recent employees (limit 3)
+    $stmt = $pdo->query("SELECT e.first_name, e.last_name, e.department, e.position 
+                         FROM employees e 
+                         JOIN users u ON e.user_id = u.id 
+                         ORDER BY e.id DESC LIMIT 3");
+    $recentEmployees = $stmt->fetchAll();
+
+    // Get evaluation statistics
+    $stmt = $pdo->query("SELECT 
+                            COUNT(*) as total,
+                            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                            SUM(CASE WHEN status = 'submitted' THEN 1 ELSE 0 END) as submitted,
+                            AVG(total_score) as avg_score
+                         FROM evaluations");
+    $evalStats = $stmt->fetch();
+    ?>
+    <div class="stats">
+        <div class="stat-card">
+            <h3>Total Employees</h3>
+            <p><?php echo $totalEmployees; ?></p>
         </div>
+
+                <div class="stat-card">
+            <h3>Evaluations</h3>
+            <div class="eval-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value"><?php echo $evalStats['total']; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pending:</span>
+                    <span class="stat-value"><?php echo $evalStats['pending']; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Submitted:</span>
+                    <span class="stat-value"><?php echo $evalStats['submitted']; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Score:</span>
+                    <span class="stat-value"><?php echo $evalStats['avg_score'] ? number_format($evalStats['avg_score'], 1) : 'N/A'; ?></span>
+                </div>
+            </div>
+            <a href="modules/manager/evaluation.php">Manage Evaluations</a>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Employees Preview</h3>
+            <table class="mini-employee-table" style="width:100%; font-size:0.95em;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($recentEmployees)): ?>
+                        <tr><td colspan="2">No employees found.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($recentEmployees as $emp): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($emp['first_name'] . ' ' . $emp['last_name']); ?></td>
+                                <td><?php echo htmlspecialchars($emp['department']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            <a href="modules/hr/employees.php">View All Employees</a>
+        </div>
+        
+
+    </div>
 
     <?php elseif ($activeRole === 'manager'): ?>
         <div class="stats">
@@ -237,18 +327,31 @@ foreach ($attendanceRecords as $record) {
                 <p><?php echo $totalEmployees; ?></p>
             </div>
             <div class="stat-card">
-                <h3>Pending Leaves</h3>
-                <p><?php echo $pendingLeaves; ?></p>
-            </div>
-            <div class="stat-card">
                 <h3>Notifications</h3>
                 <?php
                 try {
+                    // Check for pending evaluations
                     $stmt = $pdo->prepare("SELECT COUNT(*) as pending_evals FROM evaluations WHERE evaluator_id = ? AND status = 'pending'");
                     $stmt->execute([$_SESSION['user_id']]);
                     $pendingEvals = $stmt->fetchColumn();
+                    
+                    // Check for pending attendance corrections
+                    $stmt = $pdo->prepare("SELECT COUNT(*) as pending_corrections 
+                                          FROM attendance_corrections ac 
+                                          JOIN attendance a ON ac.attendance_id = a.id 
+                                          JOIN employees e ON a.employee_id = e.id 
+                                          WHERE ac.status = 'pending'");
+                    $stmt->execute();
+                    $pendingCorrections = $stmt->fetchColumn();
+
+                    // Check for pending leave requests
+                    $stmt = $pdo->prepare("SELECT COUNT(*) as pending_leaves FROM leave_requests WHERE status = 'pending'");
+                    $stmt->execute();
+                    $pendingLeaves = $stmt->fetchColumn();
+
                 } catch (Exception $e) {
                     $pendingEvals = 0;
+                    $pendingCorrections = 0;
                 }
                 ?>
                 <?php if ($pendingEvals > 0): ?>
@@ -256,7 +359,23 @@ foreach ($attendanceRecords as $record) {
                         You have <?php echo $pendingEvals; ?> pending evaluation<?php echo $pendingEvals == 1 ? '' : 's'; ?>.
                         <a href="modules/manager/evaluation.php">View Evaluations</a>
                     </div>
-                <?php else: ?>
+                <?php endif; ?>
+                
+                <?php if ($pendingCorrections > 0): ?>
+                    <div class="notification success">
+                        You have <?php echo $pendingCorrections; ?> pending attendance correction<?php echo $pendingCorrections == 1 ? '' : 's'; ?>.
+                        <a href="modules/employee/attendance.php">Review Corrections</a>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($pendingLeaves > 0): ?>
+                    <div class="notification success">
+                        You have <?php echo $pendingLeaves; ?> pending leave request<?php echo $pendingLeaves == 1 ? '' : 's'; ?>.
+                        <a href="modules/employee/leave.php">Review Leave Requests</a>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($pendingEvals == 0 && $pendingCorrections == 0 && $pendingLeaves): ?>
                     <div class="notification">
                         All clear.
                     </div>

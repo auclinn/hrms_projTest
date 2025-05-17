@@ -44,7 +44,7 @@
                         <a href="/modules/employee/leave.php">Leave Requests</a>
                     <?php else: ?>
                         <!-- HR/Manager/Admin View Links -->
-                        <?php if (in_array($_SESSION['active_role'], ['hr', 'admin'])): ?>
+                        <?php if (in_array($_SESSION['active_role'], ['hr', 'admin', 'manager'])): ?>
                             <a href="/modules/hr/employees.php">Employees</a>
                         <?php endif; ?>
                         <a href="/modules/employee/attendance.php">Attendance</a>

@@ -185,7 +185,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_employees'])) 
 <div class="employee-mgt-container">
     <div class="add-emp-container">
         <h2>Employee Management</h2>
-        <button id="openAddEmployeeModal" type="button">Add New Employee</button>
+        <?php if (hasRole(['admin', 'hr'])): ?>
+            <button id="openAddEmployeeModal" type="button">Add New Employee</button>
+        <?php endif; ?>
         
         <div id="addEmployeeModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
             <div class="modal-content" style="background:#fff; margin:5% auto; padding:20px; border-radius:5px; width:90%; max-width:600px; position:relative;">
@@ -325,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_employees'])) 
         <div class="search-filter">
             <h3>Employee List</h3>
             <form method="GET" action="employees.php">
-            <input type="text" name="search" placeholder="Search by name, username, email, department..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
             <label for="from_date">Hire Date:</label>
             <input type="date" name="from_date" id="from_date" value="<?php echo isset($_GET['from_date']) ? htmlspecialchars($_GET['from_date']) : ''; ?>" style="padding:6px;">
             <span>to</span>
@@ -339,6 +341,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_employees'])) 
         </form>
         </div>
         <div style="max-height:50vh; overflow-y:auto;">
+            <?php
+            // If the current user is a manager, filter employeesPage to only show employees from their department
+            if (hasRole('manager') && !hasRole(['admin', 'hr'])) {
+                // Get current manager's department
+                $stmt = $pdo->prepare("SELECT department FROM employees WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $managerDept = $stmt->fetchColumn();
+
+                // Filter employeesPage to only those in the same department
+                $employeesPage = array_filter($employeesPage, function($emp) use ($managerDept) {
+                    return $emp['department'] === $managerDept;
+                });
+                // Re-index array for foreach
+                $employeesPage = array_values($employeesPage);
+            }
+            ?>
             <table style="border-collapse:collapse; width:100%;">
                 <thead style="position:sticky; top:0; background:#fff; z-index:1;">
                     <tr>

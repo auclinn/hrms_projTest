@@ -53,7 +53,7 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']
 
 // Get current user's attendance records count
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM attendance 
-    WHERE employee_id = ? AND MONTH(date) = MONTH(CURRENT_DATE())");
+    WHERE employee_id = ? "); //AND MONTH(date) = MONTH(CURRENT_DATE())
 $stmt->execute([$employeeId]);
 $totalRows = $stmt->fetchColumn();
 $totalPages = max(1, ceil($totalRows / $perPage));
@@ -64,8 +64,8 @@ $offset = ($page - 1) * $perPage;
 
 // Get paginated personal attendance records
 $stmt = $pdo->prepare("SELECT * FROM attendance 
-    WHERE employee_id = :employee_id AND MONTH(date) = MONTH(CURRENT_DATE()) 
-    ORDER BY date DESC LIMIT :limit OFFSET :offset");
+    WHERE employee_id = :employee_id  
+    ORDER BY date DESC LIMIT :limit OFFSET :offset"); // AND MONTH(date) = MONTH(CURRENT_DATE())
 $stmt->bindValue(':employee_id', $employeeId);
 $stmt->bindValue(':limit', (int)$perPage, PDO::PARAM_INT);
 $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
@@ -115,7 +115,7 @@ if (!empty($whereClauses)) {
     $params[] = $allPerPage;
     $params[] = $allOffset;
 } else {
-    $query .= " WHERE MONTH(a.date) = MONTH(CURRENT_DATE()) ORDER BY a.date DESC LIMIT ? OFFSET ?";
+    $query .= " ORDER BY a.date DESC LIMIT ? OFFSET ?";
     $params = [$allPerPage, $allOffset];
 }
 

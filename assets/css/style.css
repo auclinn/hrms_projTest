@@ -1159,6 +1159,123 @@ table tr:hover {
     box-shadow: none !important;
 }
 
+/* admin dashboard */
+#employee-stats .employee-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+#employee-stats .stat-item {
+    background-color: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 0.4rem;
+    border: 1px solid #e5e7eb;
+}
+
+#employee-stats .stat-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+#employee-stats .stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a2859;
+    margin: 0;
+}
+
+#employee-stats .distribution-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+#employee-stats .distribution-list li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#employee-stats .distribution-list li:last-child {
+    border-bottom: none;
+}
+
+#employee-stats #stat-flex {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+/* hr dashboard */
+/* Mini employee table */
+.mini-employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.9rem;
+}
+
+.mini-employee-table th {
+    background-color: #f3f4f6;
+    padding: 0.5rem;
+    text-align: left;
+    font-weight: 600;
+    color: #1a2859;
+}
+
+.mini-employee-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.mini-employee-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Evaluation stats */
+.eval-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #f8fafc;
+    border-radius: 0.25rem;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #1a2859;
+}
+
+.stat-card a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #1a2859;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.stat-card a:hover {
+    text-decoration: underline;
+}
+
 @keyframes modalFadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
