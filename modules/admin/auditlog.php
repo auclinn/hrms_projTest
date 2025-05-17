@@ -80,17 +80,17 @@ $logs = $stmt->fetchAll();
             <option value="custom" <?= $filter === 'custom' ? 'selected' : '' ?>>Custom Range</option>
             </select>
 
-            <span id="customRange" style="display: <?= $filter === 'custom' ? 'inline' : 'none' ?>;">
+            <span id="customRange" style="display: <?= $filter === 'custom' ? 'flex' : 'none' ?>;">
             From: <input type="date" name="from" value="<?= htmlspecialchars($custom_from) ?>">
             To: <input type="date" name="to" value="<?= htmlspecialchars($custom_to) ?>">
             </span>
 
             <button type="submit">Apply</button>
-            <button type="button" id="clearFilterBtn" style="display: <?= $filter !== '' ? 'inline' : 'none' ?>;" onclick="clearAuditFilter()">Clear</button>
+            <button type="button" id="clearFilterBtn" style="display: <?= $filter !== '' ? 'flex' : 'none' ?>;" onclick="clearAuditFilter()">Clear</button>
         </form>
         <script>
             function handleClearFilter(value) {
-            document.getElementById('clearFilterBtn').style.display = value !== '' ? 'inline' : 'none';
+            document.getElementById('clearFilterBtn').style.display = value !== '' ? 'flex' : 'none';
             }
             function clearAuditFilter() {
             var form = document.getElementById('auditFilterForm');
@@ -154,7 +154,7 @@ $logs = $stmt->fetchAll();
 
 <script>
     function toggleCustomRange(value) {
-        document.getElementById('customRange').style.display = value === 'custom' ? 'inline' : 'none';
+        document.getElementById('customRange').style.display = value === 'custom' ? 'flex' : 'none';
     }
 </script>
 

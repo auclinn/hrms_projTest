@@ -302,6 +302,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_csv'])) {
             <?php endif; ?>
         <?php endif; ?>
     </div>
+
+    <?php if ($activeRole === 'manager'): ?>
+    <h2>Pending Attendance Corrections</h2>
+    <?php if (empty($corrections)): ?>
+        <p>No pending correction requests.</p>
+    <?php else: ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Correction Type</th>
+                    <th>Requested Time</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($corrections as $c): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($c['first_name'] . ' ' . $c['last_name']); ?></td>
+                        <td><?php echo $c['date']; ?></td>
+                        <td><?php echo ucfirst($c['correction_type']); ?></td>
+                        <td><?php echo $c['corrected_time']; ?></td>
+                        <td><?php echo htmlspecialchars($c['reason']); ?></td>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="correction_id" value="<?php echo $c['id']; ?>">
+                                <button type="submit" name="review_correction" value="approve" onclick="this.form.decision.value='approved'">Approve</button>
+                                <button type="submit" name="review_correction" value="reject" onclick="this.form.decision.value='rejected'">Reject</button>
+                                <input type="hidden" name="decision" value="">
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        
+        <!-- Pending Corrections Pagination -->
+        <div class="pagination" style="margin:15px 0;">
+            <?php if ($corrTotalPages > 1): ?>
+                <?php if ($corrPage > 1): ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => 1])) ?>">&laquo; First</a>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrPage - 1])) ?>">&lt; Prev</a>
+                <?php endif; ?>
+                <?php
+                $corrStartPage = max(1, $corrPage - 2);
+                $corrEndPage = min($corrTotalPages, $corrPage + 2);
+                for ($i = $corrStartPage; $i <= $corrEndPage; $i++): ?>
+                    <?php if ($i == $corrPage): ?>
+                        <span style="font-weight:bold;"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $i])) ?>"><?php echo $i; ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+                <?php if ($corrPage < $corrTotalPages): ?>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrPage + 1])) ?>">Next &gt;</a>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrTotalPages])) ?>">Last &raquo;</a>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+    <?php endif; ?>
+
+
     
     <?php if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager'): ?>
         <h2>Employees' Attendance</h2>
@@ -463,68 +528,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_csv'])) {
     </script>
     <?php endif; ?>
 
-    <?php if ($activeRole === 'manager'): ?>
-    <h2>Pending Attendance Corrections</h2>
-    <?php if (empty($corrections)): ?>
-        <p>No pending correction requests.</p>
-    <?php else: ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Employee</th>
-                    <th>Date</th>
-                    <th>Correction Type</th>
-                    <th>Requested Time</th>
-                    <th>Reason</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($corrections as $c): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($c['first_name'] . ' ' . $c['last_name']); ?></td>
-                        <td><?php echo $c['date']; ?></td>
-                        <td><?php echo ucfirst($c['correction_type']); ?></td>
-                        <td><?php echo $c['corrected_time']; ?></td>
-                        <td><?php echo htmlspecialchars($c['reason']); ?></td>
-                        <td>
-                            <form method="POST" style="display:inline;">
-                                <input type="hidden" name="correction_id" value="<?php echo $c['id']; ?>">
-                                <button type="submit" name="review_correction" value="approve" onclick="this.form.decision.value='approved'">Approve</button>
-                                <button type="submit" name="review_correction" value="reject" onclick="this.form.decision.value='rejected'">Reject</button>
-                                <input type="hidden" name="decision" value="">
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        
-        <!-- Pending Corrections Pagination -->
-        <div class="pagination" style="margin:15px 0;">
-            <?php if ($corrTotalPages > 1): ?>
-                <?php if ($corrPage > 1): ?>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => 1])) ?>">&laquo; First</a>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrPage - 1])) ?>">&lt; Prev</a>
-                <?php endif; ?>
-                <?php
-                $corrStartPage = max(1, $corrPage - 2);
-                $corrEndPage = min($corrTotalPages, $corrPage + 2);
-                for ($i = $corrStartPage; $i <= $corrEndPage; $i++): ?>
-                    <?php if ($i == $corrPage): ?>
-                        <span style="font-weight:bold;"><?php echo $i; ?></span>
-                    <?php else: ?>
-                        <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $i])) ?>"><?php echo $i; ?></a>
-                    <?php endif; ?>
-                <?php endfor; ?>
-                <?php if ($corrPage < $corrTotalPages): ?>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrPage + 1])) ?>">Next &gt;</a>
-                    <a href="?<?= http_build_query(array_merge($_GET, ['corr_page' => $corrTotalPages])) ?>">Last &raquo;</a>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
-    <?php endif; ?>
-    <?php endif; ?>
 </div>
 
 <?php include '../../includes/footer.php'; ?>

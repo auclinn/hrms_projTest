@@ -321,10 +321,45 @@ foreach ($attendanceRecords as $record) {
     </div>
 
     <?php elseif ($activeRole === 'manager'): ?>
+        <?php
+        // Get manager's department
+        $stmt = $pdo->prepare("SELECT department FROM employees WHERE user_id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $managerDept = $stmt->fetchColumn();
+        
+        // Get team employees (same department, role=employee, limit 3)
+        $stmt = $pdo->prepare("SELECT e.first_name, e.last_name, e.position 
+                            FROM employees e
+                            JOIN users u ON e.user_id = u.id
+                            WHERE e.department = ? AND u.role = 'employee'
+                            ORDER BY e.id DESC LIMIT 3");
+        $stmt->execute([$managerDept]);
+        $teamEmployees = $stmt->fetchAll();
+        ?>
         <div class="stats">
             <div class="stat-card">
-                <h3>Team Employees</h3>
-                <p><?php echo $totalEmployees; ?></p>
+                <h3>Department Employees</h3>
+                <?php if (!empty($teamEmployees)): ?>
+                    <table class="mini-team-table" style="width:100%; font-size:0.95em;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($teamEmployees as $emp): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($emp['first_name'] . ' ' . $emp['last_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($emp['position']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <a href="modules/hr/employees.php">View All Department Employees</a>
+                <?php else: ?>
+                    <p>No team members found.</p>
+                <?php endif; ?>
             </div>
             <div class="stat-card">
                 <h3>Notifications</h3>

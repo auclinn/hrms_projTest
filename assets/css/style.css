@@ -907,9 +907,14 @@ table tr:hover {
 
 .search-filter form {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+}
+
+.search-filter label {
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 .search-filter input[type="text"],
@@ -1276,6 +1281,45 @@ table tr:hover {
     text-decoration: underline;
 }
 
+/* manager dashboard */
+/* Mini team table */
+.mini-team-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.9rem;
+}
+
+.mini-team-table th {
+    background-color: #f3f4f6;
+    padding: 0.5rem;
+    text-align: left;
+    font-weight: 600;
+    color: #1a2859;
+}
+
+.mini-team-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.mini-team-table tr:last-child td {
+    border-bottom: none;
+}
+
+.stat-card a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #1a2859;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.stat-card a:hover {
+    text-decoration: underline;
+}
+
 @keyframes modalFadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1463,7 +1507,6 @@ table tr:hover {
 
 .auditfilter-form {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
 }
