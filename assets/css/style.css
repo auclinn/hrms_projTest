@@ -893,6 +893,27 @@ table tr:hover {
     width: 100%;
 }
 
+/* Password change section */
+.password-change-section {
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.password-change-section h3 {
+    color: #1a2859;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.password-change-section small {
+    display: block;
+    margin-top: 0.25rem;
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
 /* ---------- Employee mgt specific styling */
 .employee-mgt-container {
     width: 95%;

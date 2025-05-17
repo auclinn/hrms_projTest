@@ -264,12 +264,29 @@ foreach ($attendanceRecords as $record) {
     $evalStats = $stmt->fetch();
     ?>
     <div class="stats">
-        <div class="stat-card">
-            <h3>Total Employees</h3>
-            <p><?php echo $totalEmployees; ?></p>
+        <div class="stat-card" id = "employee-stats">
+            <h3>Employee Statistics</h3>
+            <div class="employee-stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total Employees:</span>
+                    <span class="stat-value"><?php echo $totalEmployees; ?></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Average Tenure:</span>
+                    <span class="stat-value"><?php echo number_format($avgTenure, 1); ?> years</span>
+                </div>
+                <div class="stat-item" id="stat-flex">
+                    <span class="stat-label">Departments:</span>
+                    <ul class="distribution-list">
+                        <?php foreach ($departmentDistribution as $dept => $count): ?>
+                            <li><?php echo $dept . ": " . $count; ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-                <div class="stat-card">
+        <div class="stat-card">
             <h3>Evaluations</h3>
             <div class="eval-stats">
                 <div class="stat-item">

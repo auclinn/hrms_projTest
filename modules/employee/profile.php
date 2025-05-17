@@ -27,6 +27,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Error updating profile: " . $e->getMessage();
         logAction($pdo, 'profile_update_failed', $e->getMessage());
     }
+
+    // Handle password change if fields are filled
+    if (!empty($_POST['current_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_password'])) {
+        $currentPassword = sanitize($_POST['current_password']);
+        $newPassword = sanitize($_POST['new_password']);
+        $confirmPassword = sanitize($_POST['confirm_password']);
+
+        // Get current password hash from database
+        $stmt = $pdo->prepare("SELECT u.password FROM users u JOIN employees e ON u.id = e.user_id WHERE e.id = ?");
+        $stmt->execute([$employeeId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($currentPassword, $user['password'])) {
+            if ($newPassword === $confirmPassword) {
+                if (strlen($newPassword) >= 8) {
+                    $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+                    $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = (SELECT user_id FROM employees WHERE id = ?)");
+                    $stmt->execute([$newPasswordHash, $employeeId]);
+                    
+                    $success = ($success ?? '') . " Password changed successfully!";
+                    logAction($pdo, 'password_change', 'Changed password');
+                } else {
+                    $error = ($error ?? '') . " New password must be at least 8 characters long.";
+                }
+            } else {
+                $error = ($error ?? '') . " New passwords do not match.";
+            }
+        } else {
+            $error = ($error ?? '') . " Current password is incorrect.";
+        }
+    }
 }
 
 // Handle image upload
@@ -137,6 +168,25 @@ $employee = getEmployeeDetails($employeeId);
             <div>
                 <label>Hire Date: <?php echo $employee['hire_date']; ?> </label>
             </div>
+
+            <!-- Password Change Section -->
+            <div class="password-change-section">
+                <h3>Change Password</h3>
+                <div>
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" id="current_password" name="current_password">
+                </div>
+                <div>
+                    <label for="new_password">New Password:</label>
+                    <input type="password" id="new_password" name="new_password">
+                    <small>Must be at least 8 characters long</small>
+                </div>
+                <div>
+                    <label for="confirm_password">Confirm New Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password">
+                </div>
+            </div>
+
             <button type="submit">Update Profile</button>
         </div>
     </form>
