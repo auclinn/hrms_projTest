@@ -33,6 +33,22 @@ if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager'
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM employees");
     $totalEmployees = $stmt->fetch()['total'];
 
+    // Get role distribution
+    $stmt = $pdo->query("SELECT role, COUNT(*) as count FROM users GROUP BY role");
+    $roleDistribution = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    // Get gender distribution
+    $stmt = $pdo->query("SELECT gender, COUNT(*) as count FROM employees GROUP BY gender");
+    $genderDistribution = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    // Get department distribution
+    $stmt = $pdo->query("SELECT department, COUNT(*) as count FROM employees GROUP BY department");
+    $departmentDistribution = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    // Get average tenure
+    $stmt = $pdo->query("SELECT AVG(DATEDIFF(CURRENT_DATE, hire_date)/365) as avg_tenure FROM employees");
+    $avgTenure = $stmt->fetch()['avg_tenure'];
+
     $stmt = $pdo->prepare("SELECT COUNT(*) as present FROM attendance WHERE date = ? AND status = 'present'");
     $stmt->execute([date('Y-m-d')]);
     $presentToday = $stmt->fetch()['present'];
@@ -152,48 +168,56 @@ foreach ($attendanceRecords as $record) {
     <h2><?php echo "$greeting, $userName"; ?></h2>
     
     <?php if ($activeRole === 'admin'): ?>
-    <div class="stats">
-        <div class="stat-card" id ="total-employees">
-            <h3>Total Number of Employees</h3>
-            <p><?php echo $totalEmployees; ?></p>
-        </div>
-        <div class="stat-card" id ="recent-activity">
-            <h3>Recent Activity</h3>
-                <table class="mini-audit-table" style="width:100%; font-size:0.95em;">
-                    <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Action</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    try {
-                        $stmt = $pdo->query("SELECT created_at, action, details FROM auditlogs ORDER BY created_at DESC LIMIT 3");
-                        $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        if ($logs) {
-                            foreach ($logs as $log) {
-                                echo '<tr>';
-                                echo '<td>' . htmlspecialchars($log['created_at']) . '</td>';
-                                echo '<td>' . htmlspecialchars($log['action']) . '</td>';
-                                echo '<td>' . htmlspecialchars($log['details']) . '</td>';
-                                echo '</tr>';
-                            }
-                        } else {
-                            echo '<tr><td colspan="3">No recent activity.</td></tr>';
-                        }
-                    } catch (Exception $e) {
-                        echo '<tr><td colspan="3">Error loading activity.</td></tr>';
-                    }
-                    ?>
-                    </tbody>
-                </table>
-                <a href="modules/admin/auditlog.php">View All Audit Logs</a>
+        <div class="stats">
+            <div class="stat-card" id ="total-employees">
+                <h3>Employee Statistics</h3>
+                    
+                        <h4>Total Employees: <?php echo $totalEmployees; ?></h4>
+                    
+                        <h4>Average Tenure: <?php echo number_format($avgTenure, 1); ?> years</h4>
+                    
+                        <h4>Role Distribution</h4>
+                        <ul class="distribution-list">
+                            <?php foreach ($roleDistribution as $role => $count): ?>
+                                <li><?php echo ucfirst($role) . ": " . $count; ?></li>
+                            <?php endforeach; ?>
+                        </ul>       
             </div>
-            
+            <div class="stat-card" id ="recent-activity">
+                <h3>Recent Activity</h3>
+                    <table class="mini-audit-table" style="width:100%; font-size:0.95em;">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        try {
+                            $stmt = $pdo->query("SELECT created_at, action, details FROM auditlogs ORDER BY created_at DESC LIMIT 5");
+                            $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            if ($logs) {
+                                foreach ($logs as $log) {
+                                    echo '<tr>';
+                                    echo '<td>' . htmlspecialchars($log['created_at']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($log['action']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($log['details']) . '</td>';
+                                    echo '</tr>';
+                                }
+                            } else {
+                                echo '<tr><td colspan="3">No recent activity.</td></tr>';
+                            }
+                        } catch (Exception $e) {
+                            echo '<tr><td colspan="3">Error loading activity.</td></tr>';
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                    <a href="modules/admin/auditlog.php">View All Audit Logs</a>
+            </div>
         </div>
-        
     <?php elseif ($activeRole === 'hr'): ?>
         <div class="stats">
             <div class="stat-card">
