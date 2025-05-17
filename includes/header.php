@@ -25,8 +25,8 @@
             <figure class="logo-container">
                 <img src="../../assets/imgs/hrms_logo.png" alt="hrms_logo" class="logo">
                 <?php if (isLoggedIn()): ?>
-                    <figcaption>Welcome, <?php echo $_SESSION['username']; ?> 
-                        (<?php echo ucfirst($_SESSION['active_role'] ?? 'employee'); ?>)
+                    <figcaption>
+                        <?php echo ucfirst($_SESSION['active_role'] ?? 'employee'); ?>
                     </figcaption>
                 <?php endif; ?>
             </figure>
@@ -47,6 +47,7 @@
                         <?php if (in_array($_SESSION['active_role'], ['hr', 'admin'])): ?>
                             <a href="/modules/hr/employees.php">Employees</a>
                         <?php endif; ?>
+                        <a href="/modules/employee/attendance.php">Attendance</a>
                         <?php if (in_array($_SESSION['active_role'], ['hr'])): ?>
                             <a href="/modules/manager/evaluation.php">Evaluations</a>
                         <?php endif; ?>
@@ -56,7 +57,7 @@
                         <?php if (($_SESSION['active_role'] ?? '') === 'admin'): ?>
                             <a href="/modules/admin/auditlog.php">Audit Log</a>
                         <?php endif; ?>
-                        <a href="/modules/employee/attendance.php">Attendance</a>
+                        
                     <?php endif; ?>
 
                     <!-- Role Switching -->

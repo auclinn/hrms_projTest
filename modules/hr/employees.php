@@ -119,12 +119,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_employee'])) {
 
 // Get all employees
 $employees = getAllEmployees();
+
+// Handle employee export to CSV
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['export_employees'])) {
+    if (!hasRole(['admin', 'hr'])) {
+        die('Unauthorized access');
+    }
+
+    // Get all employee data with user info
+    $stmt = $pdo->query("
+        SELECT e.*, u.username, u.role, u.email, u.created_at as account_created
+        FROM employees e
+        JOIN users u ON e.user_id = u.id
+        ORDER BY e.hire_date DESC
+    ");
+    $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($employees)) {
+        $_SESSION['error'] = "No employees found to export.";
+        header("Location: employees.php");
+        exit;
+    }
+
+    // Set headers for file download
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="employees_export_'.date('Y-m-d').'.csv"');
+    
+    // Open output stream
+    $output = fopen('php://output', 'w');
+    
+    // Write CSV headers
+    fputcsv($output, [
+        'Employee ID', 'Username', 'First Name', 'Last Name', 'Email', 
+        'Role', 'Gender', 'Date of Birth', 'Address', 'Phone',
+        'Department', 'Position', 'Hire Date', 'Account Created'
+    ]);
+    
+    // Write data rows
+    foreach ($employees as $employee) {
+        fputcsv($output, [
+            $employee['id'],
+            $employee['username'],
+            $employee['first_name'],
+            $employee['last_name'],
+            $employee['email'],
+            ucfirst($employee['role']),
+            ucfirst($employee['gender']),
+            $employee['dob'],
+            $employee['address'],
+            $employee['phone'],
+            $employee['department'],
+            $employee['position'],
+            $employee['hire_date'],
+            $employee['account_created']
+        ]);
+    }
+    
+    fclose($output);
+    exit;
+}
+
+
 ?>
 <?php include '../../includes/header.php'; ?>
 <div class="employee-mgt-container">
     <div class="add-emp-container">
         <h2>Employee Management</h2>
         <button id="openAddEmployeeModal" type="button">Add New Employee</button>
+        
         <div id="addEmployeeModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);">
             <div class="modal-content" style="background:#fff; margin:5% auto; padding:20px; border-radius:5px; width:90%; max-width:600px; position:relative;">
                 <span id="closeAddEmployeeModal" style="position:absolute; top:10px; right:20px; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
@@ -477,5 +539,12 @@ $employees = getAllEmployees();
         });
         </script>
     </div>
+    <?php if (hasRole(['admin', 'hr'])): ?>
+        <form method="POST" action="employees.php" style="display: inline-block; margin-left: 10px;">
+            <button type="submit" name="export_employees" class="export-btn">
+                Export to CSV
+            </button>
+        </form>
+    <?php endif; ?>
 </div>
 <?php include '../../includes/footer.php'; ?>

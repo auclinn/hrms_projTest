@@ -11,7 +11,21 @@ if ($activeRole === 'employee') {
     $employeeId = getEmployeeId();
 }
 
+// Get current user's name
+$stmt = $pdo->prepare("SELECT first_name FROM employees WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
+$userName = $user ? $user['first_name'] : 'User';
 
+// Determine time-based greeting
+$hour = date('G');
+if ($hour < 12) {
+    $greeting = "Good morning";
+} elseif ($hour < 18) {
+    $greeting = "Good afternoon";
+} else {
+    $greeting = "Good evening";
+}
 
 // Get stats based on role
 if ($activeRole === 'admin' || $activeRole === 'hr' || $activeRole === 'manager') {
@@ -135,7 +149,7 @@ foreach ($attendanceRecords as $record) {
 ?>
 <?php include 'includes/header.php'; ?>
 <div class="dashboard-container">
-    <h2>Dashboard</h2>
+    <h2><?php echo "$greeting, $userName"; ?></h2>
     
     <?php if ($activeRole === 'admin'): ?>
     <div class="stats">
